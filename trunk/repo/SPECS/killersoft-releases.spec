@@ -13,6 +13,7 @@ Vendor: Killersoft Yum Repository, http://yum.killersoft.com/
 
 Source0: mirrors-killersoft
 Source1: RPM-GPG-KEY-killersoft
+BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
