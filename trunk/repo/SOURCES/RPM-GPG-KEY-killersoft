@@ -1,0 +1,35 @@
+The following public key can be used to verify RPM packages
+downloaded from http://yum.killersoft.com/ using 'rpm -K'
+if you have the GNU GPG package.
+Questions about this key should be sent to:
+Clay Loveless <clay@killersoft.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.4.9 (Darwin)
+
+mQINBEovCdABEADXfqWw5z7Czj0NfzbMA71NOqp8x6gpvD6JoDVnRMdqZP39IWqJ
+KqdnDUCsxuL3uhMQ6PEclz+qBd1MmZ+TI52ymGsa+26Am47CtXl3e9rMA5JbgeU0
+85nrTkCABhIZqyyD0WGGeEJaZ86fxRRBN1W8nNPItlgpt+Iw+Po7vUZYEgp6NZhU
+R36IFph63zHBP/Hc2tGmKekDNGCVSvRudHcwaw5XnFRadFAWlfk6pM8TQ0lynH20
+D4MxQ0YFUmzyTaXTVk6hTmuSw1Vf9wAtYdk4/249bqZ0/qxEIa7kQ8RUW+TFWS47
+K+Ya6MHPmQ1QwYJSyKKCRncQ7Jc9MKVF47fzny4TdzzcZ7l8IbpahB8O0djE29k6
+bqnxFZBqgl+4vtfKOJJEOMY6vAyMkeV+nWY5Bptq1IStI4Zlv/XAuNtMgEn07l4H
+6FqflByOf8Ib1gnbeqRNQwV7W+j7qN5Y2E4TmhLCSvpJ1bXlTiXFP7AUvfuzxwnl
+as5hpeDHjakjTwtALvvFcilcg4YOk2sbcCAO+KU7fRlWg+vXudKFYgTQcmrVf1y1
+RWx4/z2R1jFFLHklesXqSpMOXBvdsQCDhIp9sX1MSDTucFhJoDyurzPczyBveWH0
+UZvYB3cuoHQ7vmnsidlwmJmJFnk9bLqXyHkTtnOt2A7cFX5OWF9/+LC0+QARAQAB
+tClDbGF5IExvdmVsZXNzICh5dW0pIDxjbGF5QGtpbGxlcnNvZnQuY29tPokCNgQT
+AQIAIAUCSi8J0AIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEJOYtRXWJZeQ
+mRQP/0ohFLddhKqwAEFZWi6N6kQvPlbUhxUy8fEwUv8i+hWfwOyaSCubddzcLhgy
+kzNPHILghUZJgflB6xC32iSsdX1HxX53gnjTS6yyk4oJorgcCrzC8yWWKIxuZjHH
+6oDuDVpxs6yVm4/v8Twzt7R+a24OszF1ublpPxiQ3JrbYRrAo0WPc9S1YD4Zhgu5
+RkQkuOfHewviETA9Py+XcCPTGcI1wcbyYM9oMAUbi/VD99UF7pCL2ffovzQUTVZx
++zCliRKG72xgpUElhyf5z8XtI51v0n5WxetjiNzdhTJdNFOt77bC6af0S2g2u3ZB
+KW52IfLgIt7EU4PudJBR9qUqeu3GzzTkjZnaXdn9cN9e5Budj0NHZgxzms+7eGys
+hSoEO823VvKbjp0NJibzQy5G0T18M31RvnId4EKT7qrI4t2PuWk7RjhuHeTPvmcp
+o/SkByzDeD04DlTvpc0rOqPvcl2iNb+C8PCuU+D9gyIBZQ+iWkznWIqEC6VJBo9F
+l9Fww7px3y5eHrw57xl+99BF7dSgrkmKtWtTiiOBh1LzwUQIddqsgyT1wbZd/j23
+MJkuWQUH4RM3/MArZlSfk+jyhZYcragFoqbkjoHf873JyTsrneBeYEQ6RyALHqHV
+Bqla74LyugJBhRFrMzZbo7Xs0iEa+3oM5mOQJx6fGC97QGUo
+=mYbL
+-----END PGP PUBLIC KEY BLOCK-----
