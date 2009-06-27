@@ -15,6 +15,7 @@ Source0: mirrors-killersoft
 Source1: RPM-GPG-KEY-killersoft
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+Requires: yum-priorities
 
 %description
 Killersoft Yum Repository release installation. This package contains apt,
