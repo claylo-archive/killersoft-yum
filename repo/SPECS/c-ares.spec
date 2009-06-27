@@ -5,9 +5,8 @@ Version: 1.6.0
 Release: 1%{?dist}
 License: MIT
 Group: System Environment/Libraries
-URL: http://daniel.haxx.se/projects/c-ares/
-Source0: http://daniel.haxx.se/projects/c-ares/c-ares-%{version}.tar.gz
-Source1: LICENSE
+URL: http://c-ares.haxx.se/
+Source0: http://c-ares.haxx.se/c-ares-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %description
@@ -26,7 +25,6 @@ compile applications or shared objects that use c-ares.
 
 %prep
 %setup -q
-cp %{SOURCE1} .
 
 %build
 %configure --enable-shared
@@ -46,7 +44,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc README README.cares CHANGES NEWS LICENSE
+%doc README README.cares CHANGES NEWS AUTHORS TODO RELEASE-NOTES
 %{_libdir}/*.so.*
 
 %files devel
@@ -55,6 +53,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/ares_dns.h
 %{_includedir}/ares_version.h
 %{_libdir}/*.so
+%{_libdir}/pkgconfig/*.pc
 %{_mandir}/man3/ares_*
 
 %changelog
