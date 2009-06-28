@@ -8,3 +8,6 @@ ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-1.4.9.tar.bz2
 ftp://xmlsoft.org:21/libxml2/libxml2-2.6.32.tar.gz
 ftp://xmlsoft.org/XSLT/libxslt-1.1.23.tar.gz
 ftp://ftp.simplesystems.org/pub/png/src/libpng-1.2.37.tar.bz2
+http://download.savannah.gnu.org/releases-noredirect/freetype/freetype-2.3.9.tar.bz2
+http://download.savannah.gnu.org/releases-noredirect/freetype/freetype-doc-2.3.9.tar.bz2
+http://download.savannah.gnu.org/releases-noredirect/freetype/ft2demos-2.3.9.tar.bz2
