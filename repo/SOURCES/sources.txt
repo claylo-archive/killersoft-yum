@@ -11,3 +11,4 @@ ftp://ftp.simplesystems.org/pub/png/src/libpng-1.2.37.tar.bz2
 http://download.savannah.gnu.org/releases-noredirect/freetype/freetype-2.3.9.tar.bz2
 http://download.savannah.gnu.org/releases-noredirect/freetype/freetype-doc-2.3.9.tar.bz2
 http://download.savannah.gnu.org/releases-noredirect/freetype/ft2demos-2.3.9.tar.bz2
+ftp://ftp.cac.washington.edu/mail/imap-2007e.tar.gz
