@@ -12,3 +12,4 @@ http://download.savannah.gnu.org/releases-noredirect/freetype/freetype-2.3.9.tar
 http://download.savannah.gnu.org/releases-noredirect/freetype/freetype-doc-2.3.9.tar.bz2
 http://download.savannah.gnu.org/releases-noredirect/freetype/ft2demos-2.3.9.tar.bz2
 ftp://ftp.cac.washington.edu/mail/imap-2007e.tar.gz
+http://monkey.org/~provos/libevent-1.4.11-stable.tar.gz
