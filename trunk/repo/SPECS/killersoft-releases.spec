@@ -2,7 +2,7 @@
 
 Summary: Killersoft release file and package configuration
 Name: killersoft-release
-Version: 0.2
+Version: 0.3
 Release: 1
 License: GPL
 Group: System Environment/Base
@@ -12,13 +12,15 @@ Packager: Clay Loveless <clay@killersoft.com>
 Vendor: Killersoft Yum Repository, http://yum.killersoft.com/
 
 Source0: mirrors-killersoft
+Source1: RPM-GPG-KEY-killersoft
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: yum-priorities
 
 %description
 Killersoft Yum Repository release installation. This package contains apt,
-yum and smart configuration for the Killersoft RPM Repository.
+yum and smart configuration for the Killersoft RPM Repository, as well as
+the public GPG keys used to sign them.
 
 %prep
 %setup -c
@@ -50,6 +52,8 @@ mirrorlist=http://cdn.killersoft.com/rpm/mirrors-killersoft
 #mirrorlist = file:///etc/yum.repos.d/mirrors-killersoft
 enabled = 1
 protect = 0
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-killersoft
+gpgcheck = 1
 # set metadata to expire faster then main
 metadata_expire=30
 priority=1
@@ -76,6 +80,8 @@ done >mirrors-killersoft.yum
 
 %install
 %{__rm} -rf %{buildroot}
+%{__cp} -a %{SOURCE1} .
+%{__install} -Dp -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-killersoft
 %{__install} -Dp -m0644 killersoft.apt %{buildroot}%{_sysconfdir}/apt/sources.list.d/killersoft.list
 %{__install} -Dp -m0644 killersoft.smart %{buildroot}%{_sysconfdir}/smart/channels/killersoft.channel
 %{__install} -Dp -m0644 killersoft.up2date %{buildroot}%{_sysconfdir}/sysconfig/rhn/sources.killersoft.txt
@@ -86,10 +92,16 @@ done >mirrors-killersoft.yum
 %{__rm} -rf %{buildroot}
 
 %post
+%if %{!?_without_rpmpubkey:1}0
+rpm -q gpg-pubkey-d6259790-4a2f09d0 &>/dev/null || rpm --import %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-killersoft || :
+%endif
 
 %files
 %defattr(-, root, root, 0755)
-%doc mirrors-killersoft.yum killersoft.*
+%doc mirrors-killersoft.yum RPM-GPG-KEY-killersoft killersoft.*
+%if %{!?_without_rpmpubkey:1}0
+%pubkey RPM-GPG-KEY-killersoft
+%endif
 %dir %{_sysconfdir}/apt/
 %dir %{_sysconfdir}/apt/sources.list.d/
 %config(noreplace) %{_sysconfdir}/apt/sources.list.d/killersoft.list
@@ -101,8 +113,13 @@ done >mirrors-killersoft.yum
 %dir %{_sysconfdir}/yum.repos.d/
 %config(noreplace) %{_sysconfdir}/yum.repos.d/killersoft.repo
 %config %{_sysconfdir}/yum.repos.d/mirrors-killersoft
+%dir %{_sysconfdir}/pki/rpm-gpg/
+%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-killersoft
 
 %changelog
+* Sun Jun 28 2009 Clay Loveless <clay@killersoft.com> - 0.3-1
+- Going back to public key distribution, keeping priority change.
+
 * Sat Jun 27 2009 Clay Loveless <clay@killersoft.com> - 0.2-1
 - Updated priority and removed public key, as packages will be unsigned.
 
