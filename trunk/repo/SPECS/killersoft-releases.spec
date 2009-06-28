@@ -76,8 +76,6 @@ done >mirrors-killersoft.yum
 
 %install
 %{__rm} -rf %{buildroot}
-%{__cp} -a %{SOURCE1} .
-%{__install} -Dp -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-killersoft
 %{__install} -Dp -m0644 killersoft.apt %{buildroot}%{_sysconfdir}/apt/sources.list.d/killersoft.list
 %{__install} -Dp -m0644 killersoft.smart %{buildroot}%{_sysconfdir}/smart/channels/killersoft.channel
 %{__install} -Dp -m0644 killersoft.up2date %{buildroot}%{_sysconfdir}/sysconfig/rhn/sources.killersoft.txt
@@ -103,7 +101,6 @@ done >mirrors-killersoft.yum
 %dir %{_sysconfdir}/yum.repos.d/
 %config(noreplace) %{_sysconfdir}/yum.repos.d/killersoft.repo
 %config %{_sysconfdir}/yum.repos.d/mirrors-killersoft
-%dir %{_sysconfdir}/pki/rpm-gpg/
 
 %changelog
 * Sat Jun 27 2009 Clay Loveless <clay@killersoft.com> - 0.2-1
