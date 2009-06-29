@@ -1,0 +1,415 @@
+--- nfs-utils-1.0.9/utils/exportfs/exportfs.c.orig	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/utils/exportfs/exportfs.c	2007-05-12 08:57:20.000000000 -0400
+@@ -416,7 +416,19 @@ dump(int verbose)
+ 				c = dumpopt(c, "anonuid=%d", ep->e_anonuid);
+ 			if (ep->e_anongid != -2)
+ 				c = dumpopt(c, "anongid=%d", ep->e_anongid);
+-
++			switch(ep->e_fslocmethod) {
++			case FSLOC_NONE:
++				break;
++			case FSLOC_REFER:
++				c = dumpopt(c, "refer=%s", ep->e_fslocdata);
++				break;
++			case FSLOC_REPLICA:
++				c = dumpopt(c, "replicas=%s", ep->e_fslocdata);
++				break;
++			case FSLOC_STUB:
++				c = dumpopt(c, "fsloc=stub");
++				break;
++			}
+ 			printf("%c\n", (c != '(')? ')' : ' ');
+ 		}
+ 	}
+--- nfs-utils-1.0.9/utils/exportfs/exports.man.orig	2007-05-12 08:36:54.000000000 -0400
++++ nfs-utils-1.0.9/utils/exportfs/exports.man	2007-05-12 08:57:20.000000000 -0400
+@@ -310,6 +310,19 @@ The value  0 has a special meaning when 
+ concept of a root of the overall exported filesystem. The export point
+ exported with fsid=0 will be used as this root.
+ 
++.TP
++.IR refer= path@host[+host][:path@host[+host]]
++A client referencing the export point will be directed to choose from
++the given list an alternative location for the filesystem.
++(Note that the server currently needs to have a filesystem mounted here,
++generally using mount --bind, although it is not actually exported.)
++
++.TP
++.IR replicas= path@host[+host][:path@host[+host]]
++If the client asks for alternative locations for the export point, it
++will be given this list of alternatives. (Note that actual replication
++of the filesystem must be handled elsewhere.)
++
+ .SS User ID Mapping
+ .PP
+ .I nfsd
+--- /dev/null	2007-05-11 17:27:51.992814452 -0400
++++ nfs-utils-1.0.9/utils/mountd/fsloc.h	2007-05-12 08:57:20.000000000 -0400
+@@ -0,0 +1,20 @@
++#ifndef FSLOC_H
++#define FSLOC_H
++
++#define FSLOC_MAX_LIST 40
++
++struct mount_point {
++	char *h_host;
++	char *h_path;
++};
++
++struct servers {
++	int h_num;
++	struct mount_point *h_mp[FSLOC_MAX_LIST];
++	int h_referral;         /* 0=replica, 1=referral */
++};
++
++struct servers *replicas_lookup(int method, char *data, char *key);
++void release_replicas(struct servers *server);
++
++#endif /* FSLOC_H */
+--- nfs-utils-1.0.9/utils/mountd/cache.c.orig	2007-05-12 08:36:54.000000000 -0400
++++ nfs-utils-1.0.9/utils/mountd/cache.c	2007-05-12 08:58:05.000000000 -0400
+@@ -26,6 +26,7 @@
+ #include "exportfs.h"
+ #include "mountd.h"
+ #include "xmalloc.h"
++#include "fsloc.h"
+ 
+ /*
+  * Support routines for text-based upcalls.
+@@ -236,6 +237,29 @@ void nfsd_fh(FILE *f)
+ 	return;		
+ }
+ 
++static void write_fsloc(FILE *f, struct exportent *ep, char *path)
++{
++	struct servers *servers;
++
++	if (ep->e_fslocmethod == FSLOC_NONE)
++		return;
++
++	servers = replicas_lookup(ep->e_fslocmethod, ep->e_fslocdata, path);
++	if (!servers)
++		return;
++	qword_print(f, "fsloc");
++	qword_printint(f, servers->h_num);
++	if (servers->h_num >= 0) {
++		int i;
++		for (i=0; i<servers->h_num; i++) {
++			qword_print(f, servers->h_mp[i]->h_host);
++			qword_print(f, servers->h_mp[i]->h_path);
++		}
++	}
++	qword_printint(f, servers->h_referral);
++	release_replicas(servers);
++}
++
+ void nfsd_export(FILE *f)
+ {
+ 	/* requests are:
+@@ -292,6 +316,7 @@ void nfsd_export(FILE *f)
+ 		qword_printint(f, found->m_export.e_anonuid);
+ 		qword_printint(f, found->m_export.e_anongid);
+ 		qword_printint(f, found->m_export.e_fsid);
++		write_fsloc(f, &found->m_export, path);
+ 	}
+ 	qword_eol(f);
+  out:
+--- /dev/null	2007-05-11 17:27:51.992814452 -0400
++++ nfs-utils-1.0.9/utils/mountd/fsloc.c	2007-05-12 08:57:20.000000000 -0400
+@@ -0,0 +1,193 @@
++#include <stdlib.h>
++#include <string.h>
++#include <syslog.h>
++
++#include "fsloc.h"
++#include "exportfs.h"
++
++/* Debugging tool: prints out @servers info to syslog */
++static void replicas_print(struct servers *sp)
++{
++	int i;
++	if (!sp) {
++		syslog(LOG_INFO, "NULL replicas pointer");
++		return;
++	}
++	syslog(LOG_INFO, "replicas listsize=%i", sp->h_num);
++	for (i=0; i<sp->h_num; i++) {
++		syslog(LOG_INFO, "%s:/%s",
++		       sp->h_mp[i]->h_host, sp->h_mp[i]->h_path);
++	}
++}
++
++/* Called by setting 'Method = stub' in config file.  Just returns
++ * some syntactically correct gibberish for testing purposes.
++ */
++static struct servers *method_stub(char *key)
++{
++	struct servers *sp;
++	struct mount_point *mp;
++
++	syslog(LOG_INFO, "called method_stub");
++	sp = malloc(sizeof(struct servers));
++	if (!sp)
++		return NULL;
++	mp = calloc(1, sizeof(struct mount_point));
++	if (!mp) {
++		free(sp);
++		return NULL;
++	}
++	sp->h_num = 1;
++	sp->h_mp[0] = mp;
++	mp->h_host = strdup("stub_server");
++	mp->h_path = strdup("/my/test/path");
++	sp->h_referral = 1;
++	return sp;
++}
++
++/* Scan @list, which is a NULL-terrminated array of strings of the
++ * form host[:host]:/path, and return corresponding servers structure.
++ */
++static struct servers *parse_list(char **list)
++{
++	int i;
++	struct servers *res;
++	struct mount_point *mp;
++	char *cp;
++
++	res = malloc(sizeof(struct servers));
++	if (!res)
++		return NULL;
++	res->h_num = 0;
++
++	/* parse each of the answers in sucession. */
++	for (i=0; list[i] && i<FSLOC_MAX_LIST; i++) {
++		mp = calloc(1, sizeof(struct mount_point));
++		if (!mp) {
++			release_replicas(res);
++			return NULL;
++		}
++		cp = strstr(list[i], ":/");
++		if (!cp) {
++			syslog(LOG_WARNING, "invalid entry '%s'", list[i]);
++			continue; /* XXX Need better error handling */
++		}
++		res->h_mp[i] = mp;
++		res->h_num++;
++		mp->h_host = strndup(list[i], cp - list[i]);
++		cp++;
++		mp->h_path = strdup(cp);
++	}
++	return res;
++}
++
++/* Converts from path@host[+host][:path@host[+host]] to
++ * host[:host]:path[@host[:host]:path]
++ *
++ * XXX Once the interface is stabilized, we can put the kernel and
++ * userland formats into agreement, so this won't be necessary.
++ */
++static char *strconvert(const char *in)
++{
++	char *path, *ptr, *copy, *rv, *rvptr, *next;
++	next = copy = strdup(in);
++	rvptr = rv = malloc(strlen(in) + 1);
++	if (!copy || !rv)
++		goto error;
++	while (next) {
++		ptr = strsep(&next, ":");
++		path = strsep(&ptr, "@");
++		if (!ptr)
++			goto error;
++		while (*ptr) {
++			if (*ptr == '+') {
++				*rvptr++ = ':';
++				ptr++;
++			}
++			else
++				*rvptr++ =  *ptr++;
++		}
++		*rvptr++ = ':';
++		while (*path) {
++			*rvptr++ = *path++;
++		}
++		if (next)
++			*rvptr++ = '@';
++		else
++			*rvptr = '\0';
++	}
++	free(copy);
++	return rv;
++error:
++	free(copy);
++	free(rv);
++	return NULL;
++}
++
++/* @data is a string of form path@host[+host][:path@host[+host]]
++ */
++static struct servers *method_list(char *data)
++{
++	char *copy, *ptr=data;
++	char **list;
++	int i, listsize;
++	struct servers *rv=NULL;
++
++	syslog(LOG_INFO, "method_list(%s)\n", data);
++	for (ptr--, listsize=1; ptr; ptr=index(ptr, ':'), listsize++)
++		ptr++;
++	list = malloc(listsize * sizeof(char *));
++	copy = strconvert(data);
++	syslog(LOG_INFO, "converted to %s\n", copy);
++	if (list && copy) {
++		ptr = copy;
++		for (i=0; i<listsize; i++) {
++			list[i] = strsep(&ptr, "@");
++		}
++		rv = parse_list(list);
++	}
++	free(copy);
++	free(list);
++	replicas_print(rv);
++	return rv;
++}
++
++/* Returns appropriately filled struct servers, or NULL if had a problem */
++struct servers *replicas_lookup(int method, char *data, char *key)
++{
++	struct servers *sp=NULL;
++	switch(method) {
++	case FSLOC_NONE:
++		break;
++	case FSLOC_REFER:
++		sp = method_list(data);
++		if (sp)
++			sp->h_referral = 1;
++		break;
++	case FSLOC_REPLICA:
++		sp = method_list(data);
++		if (sp)
++			sp->h_referral = 0;
++		break;
++	case FSLOC_STUB:
++		sp = method_stub(data);
++		break;
++	default:
++		syslog(LOG_WARNING, "Unknown method = %i", method);
++	}
++	replicas_print(sp);
++	return sp;
++}
++
++void release_replicas(struct servers *server)
++{
++	int i;
++
++	if (!server) return;
++	for (i = 0; i < server->h_num; i++) {
++		free(server->h_mp[i]->h_host);
++		free(server->h_mp[i]->h_path);
++		free(server->h_mp[i]);
++	}
++	free(server);
++}
+--- nfs-utils-1.0.9/utils/mountd/Makefile.am.orig	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/utils/mountd/Makefile.am	2007-05-12 08:57:20.000000000 -0400
+@@ -8,7 +8,7 @@ KPREFIX		= @kprefix@
+ sbin_PROGRAMS	= mountd
+ 
+ mountd_SOURCES = mountd.c mount_dispatch.c auth.c rmtab.c cache.c \
+-		 svc_run.c mountd.h
++		 svc_run.c fsloc.c mountd.h
+ mountd_LDADD = ../../support/export/libexport.a \
+ 	       ../../support/nfs/libnfs.a \
+ 	       ../../support/misc/libmisc.a \
+--- nfs-utils-1.0.9/support/include/exportfs.h.orig	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/support/include/exportfs.h	2007-05-12 08:57:20.000000000 -0400
+@@ -23,6 +23,13 @@ enum {
+ 	MCL_MAXTYPES
+ };
+ 
++enum {
++	FSLOC_NONE = 0,
++	FSLOC_REFER,
++	FSLOC_REPLICA,
++	FSLOC_STUB
++};
++
+ typedef struct mclient {
+ 	struct mclient *	m_next;
+ 	char			m_hostname[NFSCLNT_IDMAX+1];
+--- nfs-utils-1.0.9/support/include/nfslib.h.orig	2007-05-12 08:36:54.000000000 -0400
++++ nfs-utils-1.0.9/support/include/nfslib.h	2007-05-12 08:57:20.000000000 -0400
+@@ -80,6 +80,8 @@ struct exportent {
+ 	int		e_nsqgids;
+ 	int		e_fsid;
+ 	char *		e_mountpoint;
++	int             e_fslocmethod;
++	char *          e_fslocdata;
+ };
+ 
+ struct rmtabent {
+--- nfs-utils-1.0.9/support/nfs/exports.c.orig	2007-05-12 08:36:54.000000000 -0400
++++ nfs-utils-1.0.9/support/nfs/exports.c	2007-05-12 08:57:20.000000000 -0400
+@@ -95,6 +95,8 @@ getexportent(int fromkernel)
+ 	ee.e_squids = NULL;
+ 	ee.e_sqgids = NULL;
+ 	ee.e_mountpoint = NULL;
++	ee.e_fslocmethod = FSLOC_NONE;
++	ee.e_fslocdata = NULL;
+ 	ee.e_nsquids = 0;
+ 	ee.e_nsqgids = 0;
+ 
+@@ -200,7 +202,22 @@ putexportent(struct exportent *ep)
+ 	if (ep->e_mountpoint)
+ 		fprintf(fp, "mountpoint%s%s,",
+ 			ep->e_mountpoint[0]?"=":"", ep->e_mountpoint);
+-
++	switch (ep->e_fslocmethod) {
++	case FSLOC_NONE:
++		break;
++	case FSLOC_REFER:
++		fprintf(fp, "refer=%s,", ep->e_fslocdata);
++		break;
++	case FSLOC_REPLICA:
++		fprintf(fp, "replicas=%s,", ep->e_fslocdata);
++		break;
++	case FSLOC_STUB:
++		fprintf(fp, "fsloc=stub,");
++		break;
++	default:
++		xlog(L_ERROR, "unknown fsloc method for %s:%s",
++		     ep->e_hostname, ep->e_path);
++	}
+ 	fprintf(fp, "mapping=");
+ 	switch (ep->e_maptype) {
+ 	case CLE_MAP_IDENT:
+@@ -263,6 +280,8 @@ dupexportent(struct exportent *dst, stru
+ 	}
+ 	if (src->e_mountpoint)
+ 		dst->e_mountpoint = strdup(src->e_mountpoint);
++	if (src->e_fslocdata)
++		dst->e_fslocdata = strdup(src->e_fslocdata);
+ }
+ 
+ struct exportent *
+@@ -435,6 +454,20 @@ bad_option:
+ 				ep->e_mountpoint = strdup(mp+1);
+ 			else
+ 				ep->e_mountpoint = strdup("");
++		} else if (strncmp(opt, "fsloc=", 6) == 0) {
++			if (strcmp(opt+6, "stub") == 0)
++				ep->e_fslocmethod = FSLOC_STUB;
++			else {
++				xlog(L_ERROR, "%s:%d: bad option %s\n",
++				     flname, flline, opt);
++				goto bad_option;
++			}
++		} else if (strncmp(opt, "refer=", 6) == 0) {
++			ep->e_fslocmethod = FSLOC_REFER;
++			ep->e_fslocdata = strdup(opt+6);
++		} else if (strncmp(opt, "replicas=", 9) == 0) {
++			ep->e_fslocmethod = FSLOC_REPLICA;
++			ep->e_fslocdata = strdup(opt+9);
+ 		} else {
+ 			xlog(L_ERROR, "%s:%d: unknown keyword \"%s\"\n",
+ 					flname, flline, opt);

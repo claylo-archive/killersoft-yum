@@ -1,13 +1,14 @@
 # $Id$
 Summary: NFS utilities and supporting clients and daemons for the kernel NFS server.
 Name: nfs-utils
-Version: 1.0.12
-Release: 1%{?dist}
+Version: 1.0.9
+Release: 25%{?dist}
+Epoch: 1
 
 # group all 32bit related archs
 %define all_32bit_archs i386 i686 athlon
 
-Source0: http://www.kernel.org/pub/linux/utils/nfs/%{name}-%{version}.tar.bz2
+Source0: http://www.kernel.org/pub/linux/utils/nfs/nfs-utils-1.0.10.tar.bz2
 Source1: ftp://nfs.sourceforge.net/pub/nfs/nfs.doc.tar.gz
 
 Source10: nfs.init
@@ -16,6 +17,50 @@ Source12: rpcidmapd.init
 Source13: rpcgssd.init
 Source14: rpcsvcgssd.init
 Source15: nfs.sysconfig
+
+#
+# RHEL5.0
+#
+Patch00: nfs-utils-1.0.5-statdpath.patch
+Patch01: nfs-utils-1.0.6-mountd.patch
+Patch02: nfs-utils-1.0.6-idmap.conf.patch
+Patch03: nfs-utils-1.0.6-gssd_mixed_case.patch
+Patch04: nfs-utils-1.0.8-privports.patch
+Patch05: nfs-utils-1.0.9-krb5-memory.patch
+Patch06: nfs-utils-1.0.9-idmapd-scandir-leak.patch
+Patch07: nfs-utils-1.0.9-idmap-dirscancb-listloop.patch
+Patch08: nfs-utils-1.0.9-mount-options-v3.patch
+Patch09: nfs-utils-1.0.9-lazy-umount.patch
+Patch10: nfs-utils-1.0.9-mount-sloppy.patch
+Patch11: nfs-utils-1.0.9-mount-man-nfs.patch
+Patch12: nfs-utils-1.0.9-return-mount-error.patch
+Patch13: nfs-utils-1.0.9-nfsmount-authnone.patch
+Patch14: nfs-utils-1.0.9-mount-remount.patch
+Patch15: nfs-utils-1.0.9-export-nosubtree.patch
+Patch16: nfs-utils-1.0.10-mount-nfsvers.patch
+Patch17: nfs-utils-1.0.9-udp-no-connect.patch
+Patch18: nfs-utils-1.0.10-v4-umounts.patch
+Patch19: nfs-utils-1.0.9-mount-quotes.patch
+
+#
+# RHEL5.1
+#
+Patch20: nfs-utils-1.0.9-rmtab-ipaddr.patch
+Patch21: nfs-utils-1.0.9-mount-fake.patch
+Patch22: nfs-utils-1.0.9-mount-v4-error.patch
+Patch23: nfs-utils-1.0.9-mountd-memleak.patch
+Patch24: nfs-utils-1.0.9-nfsd-macargs.patch
+Patch25: nfs-utils-1.0.10-mount-mtablock.patch
+Patch26: nfs-utils-1.0.9-mountd-etab.patch
+Patch27: nfs-utils-1.0.9-fsloc.patch
+Patch28: nfs-utils-1.0.9-mount-fsc.patch
+Patch29: nfs-utils-1.0.9-mount-nordirplus.patch
+Patch30: nfs-utils-1.0.9-mount-nosharecache.patch
+Patch31: nfs-utils-1.0.9-manpage-update.patch
+Patch32: nfs-utils-1.0.9-mount-reserved-port.patch
+Patch33: nfs-utils-1.0.9-exports-man-rmreplicas.patch
+
+Patch100: nfs-utils-1.0.9-compile.patch
 
 Group: System Environment/Daemons
 Obsoletes: nfs-server
@@ -55,6 +100,79 @@ This package also contains the mount.nfs and umount.nfs program.
 
 %prep
 %setup -q
+%patch00 -p1
+%patch01 -p1
+# Updated to latest CITIT nfs4 patches
+%patch02 -p1
+# 186069: The rpc.gssd daemon fails with mixed case characters 
+%patch03 -p1
+# 156655: rpc.statd dies immediately when STATD_PORT=786
+%patch04 -p1
+# 203078: gssd daemons and selinux do not play well.
+%patch05 -p1
+# 212547: Memory leak in rpc.idmapd
+%patch06 -p1
+# 212547: Memory leak in rpc.idmapd
+%patch07 -p1
+# Enabled the creating of mount.nfs and umount.nfs binaries
+%patch08 -p1
+# 169299: umount -l should work on hung NFS mounts with cached data
+%patch09 -p1
+# 205038: mount not allowing sloppy option
+%patch10 -p1
+# Added nfs.5 man page from util-linux
+%patch11 -p1
+# 206705: mount.nfs returns success after a failed mount
+%patch12 -p1
+# 210644: Unable to mount NFS V3 share where sec=none is specified
+%patch13 -p1
+# 211565: nfs-utils-1.0.9-mount-options-v3.patch breaks -o remount
+%patch14 -p1
+# 212218: Make no_subtree_check the default export option
+%patch15 -p1
+# 215843: nfs-utils-1.0.10-1.fc6 breaks NFSv3 support
+%patch16 -p1
+# 208244: unable to mount nfs with udp
+%patch17 -p1
+# 218446: NFS v4 umounts ping remote mountd 
+%patch18 -p1
+# 219645: Can't mount with additional contexts
+%patch19 -p1
+# 220772: mountd adds gibberish to rmtab
+%patch20 -p1
+# 227988: /sbin/mount.nfs -f doesn't update mtab
+%patch21 -p1
+# 227212: NFSv4 mounts give wrong error message when server denies mount
+%patch22 -p1
+# 239536: Memory leak was found in nfs-utils
+%patch23 -p1
+# 220887: Incorrect macro call argument in nfsd.c
+%patch24 -p1
+# 227985: /sbin/mount.nfs mtab lock
+%patch25 -p1
+# 236823: exportfs gives inconsistent results when run 
+#         immediately after nfs service is restarted
+%patch26 -p1
+# 223053: userspace part of referral support for NFSv4
+%patch27 -p1
+# Enable -o fsc mount option
+%patch28 -p1
+# 240357: RFE: Allow nfs client to disable readdirplus.
+%patch29 -p1
+# 243913: NFS Client R/O in anaconda preinstall environment
+%patch30 -p1
+# 233903: Incorrect description for sync in man page exports(5)
+%patch31 -p1
+# 246254: mount.nfs unnecessarily passes a socket to the kernel
+%patch32 -p1
+# 223053: userspace part of referral support for NFSv4
+%patch33 -p1
+
+# Do the magic to get things to compile
+%patch100 -p1
+
+# Remove .orig files
+find . -name "*.orig" | xargs rm -f
 
 %build
 
@@ -225,9 +343,8 @@ fi
 %attr(4755,root,root)   /sbin/umount.nfs4
 
 %changelog
-* Sun Jun 28 2009 Clay Loveless <clay@killersoft.com>
-- Updated for 1.0.12
-- scraped off old patches
+* Sun Jun 28 2009 Clay Loveless <clay@killersoft.com> 1.0.
+- rebuilding against updated libevent
 
 * Tue Sep 25 2007 Steve Dickson <steved@redhat.com> 1.0.10-24
 - Removed the replication part of the export(5) man page

@@ -1,0 +1,116 @@
+commit ec08843916d07c28045398e5b17e7347a8fa0135
+Author: Steve Dickson <steved@redhat.com>
+Date:   Fri May 11 12:13:06 2007 -0400
+
+    nfs-utils: have mountd hold open etab file to force inode number to change
+    
+    This patch changes mountd to hold the etab file open so that when it's
+    changed by exportfs, the inode number should change. We then change
+    auth_reload to reload the file based on whether st_ino is different
+    from the last time it was checked. It also changes auth_reload to
+    maintain a static counter value and return it instead of a timestamp
+    and fixes up get_exportlist accordingly. Finally, it adds some
+    comments to xtab_write to warn people about editing the etab in place.
+    
+    Signed-off-by: Jeff Layton <jlayton@redhat.com>
+    Signed-off-by: Steve Dickson <steved@redhat.com>
+
+--- nfs-utils-1.0.10/support/export/xtab.c.orig	2007-05-11 12:07:09.258724000 -0400
++++ nfs-utils-1.0.10/support/export/xtab.c	2007-05-11 12:07:39.720637000 -0400
+@@ -80,6 +80,12 @@ xtab_export_read(void)
+ 	return xtab_read(_PATH_ETAB, 1);
+ }
+ 
++/*
++ * mountd now keeps an open fd for the etab at all times to make sure that the
++ * inode number changes when the xtab_export_write is done. If you change the
++ * routine below such that the files are edited in place, then you'll need to
++ * fix the auth_reload logic as well...
++ */
+ static int
+ xtab_write(char *xtab, char *xtabtmp, int is_export)
+ {
+--- nfs-utils-1.0.10/utils/mountd/auth.c.orig	2006-08-07 02:40:50.000000000 -0400
++++ nfs-utils-1.0.10/utils/mountd/auth.c	2007-05-11 12:10:34.081481000 -0400
+@@ -14,6 +14,7 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include <errno.h>
++#include <unistd.h>
+ #include "misc.h"
+ #include "nfslib.h"
+ #include "exportfs.h"
+@@ -46,24 +47,34 @@ auth_init(char *exports)
+ 	xtab_mount_write();
+ }
+ 
+-int
++unsigned int
+ auth_reload()
+ {
+ 	struct stat		stb;
+-	static time_t		last_modified = 0;
+-
+-	if (stat(_PATH_ETAB, &stb) < 0)
++	static ino_t		last_inode;
++	static int		last_fd;
++	static unsigned int	counter;
++	int			fd;
++
++	if ((fd = open(_PATH_ETAB, O_RDONLY)) < 0) {
++		xlog(L_FATAL, "couldn't open %s", _PATH_ETAB);
++	} else if (fstat(fd, &stb) < 0) {
+ 		xlog(L_FATAL, "couldn't stat %s", _PATH_ETAB);
+-	if (stb.st_mtime == last_modified)
+-		return 0;
+-	last_modified = stb.st_mtime;
++	} else if (stb.st_ino == last_inode) {
++		close(fd);
++		return counter;
++	} else {
++		close(last_fd);
++		last_fd = fd;
++		last_inode = stb.st_ino;
++	}
+ 
+ 	export_freeall();
+ 	memset(&my_client, 0, sizeof(my_client));
+-	// export_read(export_file);
+ 	xtab_export_read();
++	++counter;
+ 
+-	return 1;
++	return counter;
+ }
+ 
+ static nfs_export *
+--- nfs-utils-1.0.10/utils/mountd/mountd.c.orig	2006-08-07 02:40:50.000000000 -0400
++++ nfs-utils-1.0.10/utils/mountd/mountd.c	2007-05-11 12:17:03.512115000 -0400
+@@ -463,10 +463,15 @@ get_exportlist(void)
+ 	struct groupnode	*g, *ng, *c, **cp;
+ 	nfs_export		*exp;
+ 	int			i;
++	static unsigned int ecounter;
++	unsigned int        acounter;
+ 
+-	if (!auth_reload() && elist)
++	acounter = auth_reload();
++	if (elist && acounter == ecounter)
+ 		return elist;
+ 
++	ecounter = acounter;
++
+ 	for (e = elist; e != NULL; e = ne) {
+ 		ne = e->ex_next;
+ 		for (g = e->ex_groups; g != NULL; g = ng) {
+--- nfs-utils-1.0.10/utils/mountd/mountd.h.orig	2006-08-07 02:40:50.000000000 -0400
++++ nfs-utils-1.0.10/utils/mountd/mountd.h	2007-05-11 12:18:21.393183000 -0400
+@@ -40,7 +40,7 @@ bool_t		mount_mnt_3_svc(struct svc_req *
+ 
+ void		mount_dispatch(struct svc_req *, SVCXPRT *);
+ void		auth_init(char *export_file);
+-int		auth_reload(void);
++unsigned int	auth_reload(void);
+ nfs_export *	auth_authenticate(char *what, struct sockaddr_in *sin,
+ 					char *path);
+ void		auth_export(nfs_export *exp);

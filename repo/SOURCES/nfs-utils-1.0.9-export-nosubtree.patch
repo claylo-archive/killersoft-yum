@@ -1,0 +1,154 @@
+--- nfs-utils-1.0.9/support/export/export.c.orig	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/support/export/export.c	2006-10-31 12:51:56.249670000 -0500
+@@ -34,7 +34,7 @@ export_read(char *fname)
+ 	nfs_export		*exp;
+ 
+ 	setexportent(fname, "r");
+-	while ((eep = getexportent(0,1)) != NULL) {
++	while ((eep = getexportent(0)) != NULL) {
+ 	  exp = export_lookup(eep->e_hostname, eep->e_path, 0);
+ 	  if (!exp)
+ 	    export_create(eep,0);
+--- nfs-utils-1.0.9/support/export/xtab.c.orig	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/support/export/xtab.c	2006-10-31 12:51:56.253672000 -0500
+@@ -36,7 +36,7 @@ xtab_read(char *xtab, int is_export)
+ 	if ((lockid = xflock(xtab, "r")) < 0)
+ 		return 0;
+ 	setexportent(xtab, "r");
+-	while ((xp = getexportent(is_export==0, 0)) != NULL) {
++	while ((xp = getexportent(is_export==0)) != NULL) {
+ 		if (!(exp = export_lookup(xp->e_hostname, xp->e_path, is_export != 1)) &&
+ 		    !(exp = export_create(xp, is_export!=1))) {
+ 			continue;
+--- nfs-utils-1.0.9/support/include/nfslib.h.orig	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/support/include/nfslib.h	2006-10-31 12:51:56.258672000 -0500
+@@ -92,7 +92,7 @@ struct rmtabent {
+  * configuration file parsing
+  */
+ void			setexportent(char *fname, char *type);
+-struct exportent *	getexportent(int,int);
++struct exportent *	getexportent(int);
+ void			putexportent(struct exportent *xep);
+ void			endexportent(void);
+ struct exportent *	mkexportent(char *hname, char *path, char *opts);
+--- nfs-utils-1.0.9/support/nfs/exports.c.orig	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/support/nfs/exports.c	2006-10-31 12:51:56.264671000 -0500
+@@ -32,7 +32,8 @@
+ #include "xio.h"
+ 
+ #define EXPORT_DEFAULT_FLAGS	\
+-  (NFSEXP_READONLY|NFSEXP_ROOTSQUASH|NFSEXP_GATHERED_WRITES)
++  (NFSEXP_READONLY|NFSEXP_ROOTSQUASH|NFSEXP_GATHERED_WRITES|\
++  NFSEXP_NOSUBTREECHECK)
+ 
+ int export_errno;
+ 
+@@ -44,7 +45,7 @@ static int	*squids = NULL, nsquids = 0,
+ 
+ static int	getexport(char *exp, int len);
+ static int	getpath(char *path, int len);
+-static int	parseopts(char *cp, struct exportent *ep, int warn);
++static int	parseopts(char *cp, struct exportent *ep);
+ static int	parsesquash(char *list, int **idp, int *lenp, char **ep);
+ static int	parsenum(char **cpp);
+ static int	parsemaptype(char *type);
+@@ -66,7 +67,7 @@ setexportent(char *fname, char *type)
+ }
+ 
+ struct exportent *
+-getexportent(int fromkernel, int fromexports)
++getexportent(int fromkernel)
+ {
+ 	static struct exportent	ee;
+ 	char		exp[512], *hostname;
+@@ -140,7 +141,7 @@ getexportent(int fromkernel, int fromexp
+ 	strncpy(ee.e_hostname, hostname, sizeof (ee.e_hostname) - 1);
+ 	ee.e_hostname[sizeof (ee.e_hostname) - 1] = '\0';
+ 
+-	if (parseopts(opt, &ee, fromexports) < 0)
++	if (parseopts(opt, &ee) < 0)
+ 		return NULL;
+ 
+ 	/* resolve symlinks */
+@@ -293,7 +294,7 @@ mkexportent(char *hname, char *path, cha
+ 	ee.e_path[sizeof (ee.e_path) - 1] = '\0';
+ 	strncpy (ee.m_path, ee.e_path, sizeof (ee.m_path) - 1);
+ 	ee.m_path [sizeof (ee.m_path) - 1] = '\0';
+-	if (parseopts(options, &ee, 0) < 0)
++	if (parseopts(options, &ee) < 0)
+ 		return NULL;
+ 	return &ee;
+ }
+@@ -301,7 +302,7 @@ mkexportent(char *hname, char *path, cha
+ int
+ updateexportent(struct exportent *eep, char *options)
+ {
+-	if (parseopts(options, eep, 0) < 0)
++	if (parseopts(options, eep) < 0)
+ 		return 0;
+ 	return 1;
+ }
+@@ -310,9 +311,8 @@ updateexportent(struct exportent *eep, c
+  * Parse option string pointed to by cp and set mount options accordingly.
+  */
+ static int
+-parseopts(char *cp, struct exportent *ep, int warn)
++parseopts(char *cp, struct exportent *ep)
+ {
+-	int	had_sync_opt = 0;
+ 	char 	*flname = efname?efname:"command line";
+ 	int	flline = efp?efp->x_line:0;
+ 
+@@ -345,10 +345,8 @@ parseopts(char *cp, struct exportent *ep
+ 		else if (!strcmp(opt, "insecure"))
+ 			ep->e_flags |= NFSEXP_INSECURE_PORT;
+ 		else if (!strcmp(opt, "sync")) {
+-			had_sync_opt = 1;
+ 			ep->e_flags &= ~NFSEXP_ASYNC;
+ 		} else if (!strcmp(opt, "async")) {
+-			had_sync_opt = 1;
+ 			ep->e_flags |= NFSEXP_ASYNC;
+ 		} else if (!strcmp(opt, "nohide"))
+ 			ep->e_flags |= NFSEXP_NOHIDE;
+@@ -454,13 +452,6 @@ bad_option:
+ 	ep->e_nsqgids = nsqgids;
+ 
+ out:
+-	if (warn && !had_sync_opt && !(ep->e_flags & NFSEXP_READONLY))
+-		xlog(L_WARNING, "%s [%d]: No 'sync' or 'async' option specified for export \"%s:%s\".\n"
+-				"  Assuming default behaviour ('sync').\n"
+-		     		"  NOTE: this default has changed from previous versions\n",
+-
+-				flname, flline,
+-				ep->e_hostname, ep->e_path);
+ 
+ 	return 1;
+ }
+--- nfs-utils-1.0.9/utils/exportfs/exports.man.orig	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/utils/exportfs/exports.man	2006-10-31 12:52:28.710935000 -0500
+@@ -183,9 +183,10 @@ with crossmnt to exported filesystems mo
+ filesystem "B" is mounted on a parent "A", setting crossmnt on "A" has
+ the same effect as setting "nohide" on B.
+ .TP
+-.IR no_subtree_check
+-This option disables subtree checking, which has mild security
+-implications, but can improve reliability in some circumstances.
++.IR subtree_check
++This option enables subtree checking, which does add
++another level of security, but can be unreliability 
++in some circumstances.
+ 
+ If a subdirectory of a filesystem is exported, but the whole
+ filesystem isn't then whenever a NFS request arrives, the server must
+@@ -213,10 +214,7 @@ readonly, and at least doesn't see many 
+ /var) and for which subdirectories may be exported, should probably be
+ exported with subtree checks enabled.
+ 
+-The default of having subtree checks enabled, can be explicitly
+-requested with
+-.IR subtree_check .
+-
++This type of subtree checking is disabled by default.
+ .TP
+ .IR insecure_locks
+ .TP

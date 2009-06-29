@@ -1,0 +1,32 @@
+--- nfs-utils-1.0.9/utils/mount/mount.c.orig	2007-05-04 06:04:19.000000000 -0400
++++ nfs-utils-1.0.9/utils/mount/mount.c	2007-05-04 06:06:48.000000000 -0400
+@@ -506,20 +506,21 @@
+ 					&extra_opts, &mount_opts,  0);
+ 		}
+ 	}
+-	if (fake)
+-		return 0;
+ 	if (mnt_err)
+ 		exit(EX_FAIL);
+ 
+-	mnt_err = do_mount_syscall(spec, mount_point,
+-			nfs_mount_vers == 4 ? "nfs4" : "nfs", flags, mount_opts);
++	if (!fake) {
++		mnt_err = do_mount_syscall(spec, mount_point,
++				nfs_mount_vers == 4 ? "nfs4" : "nfs", 
++				flags, mount_opts);
+ 
+-	if(mnt_err) {
+-		mount_error(mount_point);
+-		exit(EX_FAIL);
++		if (mnt_err) {
++			mount_error(mount_point);
++			exit(EX_FAIL);
++		}
+ 	}
+ 
+-	if(!nomtab) {
++	if (!nomtab) {
+ 		add_mtab(spec, mount_point, nfs_mount_vers == 4 ? "nfs4" : "nfs",
+ 			 flags, extra_opts, 0, 0);
+ 	}
