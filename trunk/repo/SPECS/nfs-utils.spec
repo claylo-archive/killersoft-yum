@@ -1,8 +1,9 @@
 # $Id$
+# yum install -y libevent-devel libgssapi-devel krb5-devel nfs-utils-lib-devel openldap-devel
 Summary: NFS utilities and supporting clients and daemons for the kernel NFS server.
 Name: nfs-utils
 Version: 1.0.9
-Release: 25%{?dist}
+Release: 50%{?dist}
 Epoch: 1
 
 # group all 32bit related archs

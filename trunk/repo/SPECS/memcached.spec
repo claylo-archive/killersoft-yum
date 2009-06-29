@@ -1,6 +1,6 @@
 Name:           memcached
 Version:        1.4.0
-Release:        rc1-1
+Release:        rc1.1
 Summary:        High Performance, Distributed Memory Object Cache
 
 Group:          System Environment/Daemons
@@ -26,7 +26,7 @@ web applications by alleviating database load.
 
 
 %build
-%configure --enable-threads
+%configure --disable-dependency-tracking
 
 make %{?_smp_mflags}
 
