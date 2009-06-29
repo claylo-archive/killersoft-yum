@@ -1,0 +1,45 @@
+--- nfs-utils-1.0.9/utils/mount/nfs_mount.h.orig	2007-05-16 13:38:54.082612000 -0400
++++ nfs-utils-1.0.9/utils/mount/nfs_mount.h	2007-05-16 14:24:12.457390000 -0400
+@@ -64,6 +64,7 @@ struct nfs_mount_data {
+ #define NFS_MOUNT_NOACL     0x0800  /* 4 */
+ #define NFS_MOUNT_SECFLAVOUR	0x2000	/* 5 */
+ #define NFS_MOUNT_FSCACHE	0x4000	/* 6 */
++#define NFS_MOUNT_NORDIRPLUS	0x8000	/* 6 */
+ 
+ /* security pseudoflavors */
+ 
+--- nfs-utils-1.0.9/utils/mount/nfsmount.c.orig	2007-05-16 13:38:54.088610000 -0400
++++ nfs-utils-1.0.9/utils/mount/nfsmount.c	2007-05-16 14:23:24.493551000 -0400
+@@ -792,6 +792,10 @@ parse_options(char *old_opts, struct nfs
+ 				data->flags &= ~NFS_MOUNT_NOACL;
+ 				if (!val)
+ 					data->flags |= NFS_MOUNT_NOACL;
++			} else if (!strcmp(opt, "rdirplus")) {
++				data->flags &= ~NFS_MOUNT_NORDIRPLUS;
++				if (!val)
++					data->flags |= NFS_MOUNT_NORDIRPLUS;
+ #endif
+ 			} else {
+ 			bad_option:
+@@ -979,6 +983,7 @@ nfsmount(const char *spec, const char *n
+ #endif
+ #if NFS_MOUNT_VERSION >= 5
+ 	printf("sec = %u ", data.pseudoflavor);
++	printf("readdirplus = %d ", (data.flags & NFS_MOUNT_NORDIRPLUS) != 0);
+ #endif
+ 	printf("\n");
+ #endif
+--- nfs-utils-1.0.9/utils/mount/nfs.man.orig	2007-05-16 13:38:54.094610000 -0400
++++ nfs-utils-1.0.9/utils/mount/nfs.man	2007-05-16 14:25:03.801149000 -0400
+@@ -273,6 +273,11 @@ default UDP protocol.  Many NFS servers 
+ Mount the NFS filesystem using the UDP protocol.  This
+ is the default.
+ .TP 1.5i
++.I nordirplus
++Disables NFSv3 READDIRPLUS RPCs. Use this options when
++mounting servers that don't support or have broken
++READDIRPLUS implementations.
++.TP 1.5i
+ .I fsc
+ Enable the use of persistent caching to the local disk using
+ the FS-Cache facility for the given mount point.

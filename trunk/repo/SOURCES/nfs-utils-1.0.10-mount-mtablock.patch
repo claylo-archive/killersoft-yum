@@ -1,0 +1,55 @@
+--- nfs-utils-1.0.10/utils/mount/mount.c.kzak	2007-02-09 11:55:44.000000000 +0100
++++ nfs-utils-1.0.10/utils/mount/mount.c	2007-02-09 12:03:32.000000000 +0100
+@@ -190,8 +190,8 @@
+ int add_mtab(char *fsname, char *mount_point, char *fstype, int flags, char *opts, int freq, int passno)
+ {
+ 	struct mntent ment;
+-	int fd;
+ 	FILE *mtab;
++	int res = 1;
+ 
+ 	ment.mnt_fsname = fsname;
+ 	ment.mnt_dir = mount_point;
+@@ -209,35 +209,23 @@
+ 		return 0;
+ 	}
+ 
+-	if ((fd = open(MOUNTED"~", O_RDWR|O_CREAT|O_EXCL, 0600)) == -1)	{
+-		fprintf(stderr, "Can't get "MOUNTED"~ lock file");
+-		return 1;
+-	}
+-        close(fd);
++	lock_mtab();
+ 
+         if ((mtab = setmntent(MOUNTED, "a+")) == NULL) {
+ 		fprintf(stderr, "Can't open " MOUNTED);
+-		return 1;
++		goto end;
+ 	}
+ 
+         if (addmntent(mtab, &ment) == 1) {
+ 		fprintf(stderr, "Can't write mount entry");
+-		return 1;
+-	}
+-
+-        if (fchmod(fileno(mtab), 0644) == -1) {
+-		fprintf(stderr, "Can't set perms on " MOUNTED);
+-		return 1;
++		goto end;
+ 	}
+ 
+ 	endmntent(mtab);
+-
+-	if (unlink(MOUNTED"~") == -1) {
+-		fprintf(stderr, "Can't remove "MOUNTED"~");
+-		return 1;
+-	}
+-
+-	return 0;
++	res = 0;
++end:
++	unlock_mtab();
++	return res;
+ }
+ 
+ int do_mount_syscall(char *spec, char *node, char *type, int flags, void *data)

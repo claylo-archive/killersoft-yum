@@ -1,0 +1,165 @@
+--- nfs-utils-1.0.9/utils/mount/nfs.man.orig	2007-06-02 09:13:34.000000000 -0400
++++ nfs-utils-1.0.9/utils/mount/nfs.man	2007-06-02 09:20:41.000000000 -0400
+@@ -278,6 +278,23 @@
+ mounting servers that don't support or have broken
+ READDIRPLUS implementations.
+ .TP 1.5i
++.I nosharecache
++As of kernel 2.6.18, it is no longer possible to mount the same
++same filesystem with different mount options to a new mountpoint.
++It was deemed unsafe to do so, since cached data cannot be shared
++between the two mountpoints. In consequence, files or directories
++that were common to both mountpoint subtrees could often be seen to
++be out of sync following an update.
++.br
++This option allows administrators to select the pre-2.6.18 behaviour,
++permitting the same filesystem to be mounted with different mount
++options.
++.br
++.B Beware:
++Use of this option is not recommended unless you are certain that there
++are no hard links or subtrees of this mountpoint that are mounted
++elsewhere.
++.TP 1.5i
+ .I fsc
+ Enable the use of persistent caching to the local disk using
+ the FS-Cache facility for the given mount point.
+@@ -438,6 +455,23 @@
+ to get reasonable good results when both clients are actively
+ writing to common filesystem on the server.
+ .TP 1.5i
++.I nosharecache
++As of kernel 2.6.18, it is no longer possible to mount the same
++same filesystem with different mount options to a new mountpoint.
++It was deemed unsafe to do so, since cached data cannot be shared
++between the two mountpoints. In consequence, files or directories
++that were common to both mountpoint subtrees could often be seen to
++be out of sync following an update.
++.br
++This option allows administrators to select the pre-2.6.18 behaviour,
++permitting the same filesystem to be mounted with different mount
++options.
++.br
++.B Beware:
++Use of this option is not recommended unless you are certain that there
++are no hard links or subtrees of this mountpoint that are mounted
++elsewhere.
++.TP 1.5i
+ .I fsc
+ Enable the use of persistent caching to the local disk using
+ the FS-Cache facility for the given mount point.
+--- nfs-utils-1.0.9/utils/mount/nfs4_mount.h.orig	2007-06-02 09:13:34.000000000 -0400
++++ nfs-utils-1.0.9/utils/mount/nfs4_mount.h	2007-06-05 04:04:19.000000000 -0400
+@@ -65,8 +65,10 @@
+ #define NFS4_MOUNT_NOCTO	0x0010	/* 1 */
+ #define NFS4_MOUNT_NOAC		0x0020	/* 1 */
+ #define NFS4_MOUNT_STRICTLOCK	0x1000	/* 1 */
+-#define NFS4_MOUNT_FSCACHE	0x4000	/* 1 */
+-#define NFS4_MOUNT_FLAGMASK	0xFFFF
++#define NFS4_MOUNT_FSCACHE	0x4000	/* 5 */
++#define NFS4_MOUNT_UNSHARED	0x10000	/* 5 */
++#define NFS4_MOUNT_FLAGMASK	0xFFFFF
++
+ 
+ /* pseudoflavors: */
+ 
+--- nfs-utils-1.0.9/utils/mount/nfs4mount.c.orig	2007-06-02 09:13:34.000000000 -0400
++++ nfs-utils-1.0.9/utils/mount/nfs4mount.c	2007-06-04 08:30:32.000000000 -0400
+@@ -201,7 +201,7 @@
+ 	char *s;
+ 	int val;
+ 	int bg, soft, intr;
+-	int nocto, noac, fscache;
++	int nocto, noac, unshared, fscache;
+ 	int retry;
+ 	int retval;
+ 	time_t timeout, t;
+@@ -252,6 +252,7 @@
+ 	intr = NFS4_MOUNT_INTR;
+ 	nocto = 0;
+ 	noac = 0;
++	unshared = 0;
+ 	fscache = 0;
+ 	retry = 10000;		/* 10000 minutes ~ 1 week */
+ 
+@@ -339,6 +340,8 @@
+ 				nocto = !val;
+ 			else if (!strcmp(opt, "ac"))
+ 				noac = !val;
++			else if (!strcmp(opt, "sharecache"))
++				unshared = !val;
+ 			else if (!sloppy) {
+ 				printf(_("unknown nfs mount option: "
+ 					 "%s%s\n"), val ? "" : "no", opt);
+@@ -351,8 +354,14 @@
+ 		| (intr ? NFS4_MOUNT_INTR : 0)
+ 		| (nocto ? NFS4_MOUNT_NOCTO : 0)
+ 		| (noac ? NFS4_MOUNT_NOAC : 0)
++		| (unshared ? NFS4_MOUNT_UNSHARED : 0)
+ 		| (fscache ? NFS4_MOUNT_FSCACHE : 0);
+ 
++	if (unshared && fscache) {
++		fprintf(stderr, _("mount: invalid mount options: "
++			"nosharecache and fsc are incompatible.\n"));
++		goto fail;
++	}
+ 	/*
+ 	 * Give a warning if the rpc.idmapd daemon is not running
+ 	 */
+@@ -387,11 +396,13 @@
+ 	       data.acregmin, data.acregmax, data.acdirmin, data.acdirmax);
+ 	printf("port = %d, bg = %d, retry = %d, flags = %.8x\n",
+ 	       ntohs(server_addr.sin_port), bg, retry, data.flags);
+-	printf("soft = %d, intr = %d, nocto = %d, noac = %d\n",
++	printf("soft = %d, intr = %d, nocto = %d, noac = %d, "
++	       "nosharecache = %d\n",
+ 	       (data.flags & NFS4_MOUNT_SOFT) != 0,
+ 	       (data.flags & NFS4_MOUNT_INTR) != 0,
+ 	       (data.flags & NFS4_MOUNT_NOCTO) != 0,
+-	       (data.flags & NFS4_MOUNT_NOAC) != 0);
++	       (data.flags & NFS4_MOUNT_NOAC) != 0,
++	       (data.flags & NFS4_MOUNT_UNSHARED) != 0);
+ 
+ 	if (num_flavour > 0) {
+ 		int pf_cnt, i;
+--- nfs-utils-1.0.9/utils/mount/nfs_mount.h.orig	2007-06-02 09:13:34.000000000 -0400
++++ nfs-utils-1.0.9/utils/mount/nfs_mount.h	2007-06-05 04:06:02.000000000 -0400
+@@ -63,8 +63,10 @@
+ #define NFS_MOUNT_BROKEN_SUID	0x0400	/* 4 */
+ #define NFS_MOUNT_NOACL     0x0800  /* 4 */
+ #define NFS_MOUNT_SECFLAVOUR	0x2000	/* 5 */
+-#define NFS_MOUNT_FSCACHE	0x4000	/* 6 */
+-#define NFS_MOUNT_NORDIRPLUS	0x8000	/* 6 */
++#define NFS_MOUNT_FSCACHE		0x4000	/* 5 */
++#define NFS_MOUNT_NORDIRPLUS	0x8000	/* 5 */
++#define NFS_MOUNT_UNSHARED		0x10000	/* 5 */
++
+ 
+ /* security pseudoflavors */
+ 
+--- nfs-utils-1.0.9/utils/mount/nfsmount.c.orig	2007-06-02 09:13:34.000000000 -0400
++++ nfs-utils-1.0.9/utils/mount/nfsmount.c	2007-06-04 07:47:06.000000000 -0400
+@@ -796,6 +796,10 @@
+ 				data->flags &= ~NFS_MOUNT_NORDIRPLUS;
+ 				if (!val)
+ 					data->flags |= NFS_MOUNT_NORDIRPLUS;
++			} else if (!strcmp(opt, "sharecache")) {
++				data->flags &= ~NFS_MOUNT_UNSHARED;
++				if (!val)
++					data->flags |= NFS_MOUNT_UNSHARED;
+ #endif
+ 			} else {
+ 			bad_option:
+@@ -814,6 +818,12 @@
+ 		}
+ 		strcat(new_opts, cbuf);
+ 	}
++	if ((data->flags & NFS_MOUNT_FSCACHE) 
++			&& (data->flags & NFS_MOUNT_UNSHARED)) {
++		fprintf(stderr, _("mount: invalid mount options: "
++			"nosharecache and fsc are incompatible.\n"));
++		goto out_bad;
++	}
+ 	/* See if the nfs host = mount host. */
+ 	if (mounthost) {
+ 		if (!nfs_gethostbyname(mounthost, mnt_saddr))

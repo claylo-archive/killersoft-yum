@@ -1,0 +1,217 @@
+--- nfs-utils-1.0.9/utils/mountd/auth.c.~1~
++++ nfs-utils-1.0.9/utils/mountd/auth.c
+@@ -76,21 +76,16 @@ auth_authenticate_internal(char *what, s
+ 	if (new_cache) {
+ 		int i;
+ 		/* return static nfs_export with details filled in */
+-		if (my_client.m_naddr != 1 ||
+-		    my_client.m_addrlist[0].s_addr != caller->sin_addr.s_addr) {
+-			/* different client to last time, so do a lookup */
+-			char *n;
+-			my_client.m_naddr = 0;
+-			my_client.m_addrlist[0] = caller->sin_addr;
+-			n = client_compose(caller->sin_addr);
+-			*error = unknown_host;
+-			if (!n)
+-				return NULL;
+-			strcpy(my_client.m_hostname, *n?n:"DEFAULT");
+-			free(n);
+-			my_client.m_naddr = 1;
+-		}
+-
++		char *n;
++		my_client.m_naddr = 0;
++		my_client.m_addrlist[0] = caller->sin_addr;
++		n = client_compose(caller->sin_addr);
++		*error = unknown_host;
++		if (!n)
++			return NULL;
++		strcpy(my_client.m_hostname, *n?n:"DEFAULT");
++		free(n);
++		my_client.m_naddr = 1;
+ 		my_exp.m_client = &my_client;
+ 
+ 		exp = NULL;
+--- nfs-utils-1.0.9/utils/mountd/cache.c.~1~
++++ nfs-utils-1.0.9/utils/mountd/cache.c
+@@ -83,9 +83,6 @@ void auth_unix_ip(FILE *f)
+ 		qword_print(f, *client?client:"DEFAULT");
+ 	qword_eol(f);
+ 
+-	if (client && strcmp(ipaddr, client))
+-		mountlist_add(ipaddr, *client?client:"DEFAULT");
+-
+ 	if (client) free(client);
+ 	
+ }
+@@ -295,7 +292,6 @@ void nfsd_export(FILE *f)
+ 		qword_printint(f, found->m_export.e_anonuid);
+ 		qword_printint(f, found->m_export.e_anongid);
+ 		qword_printint(f, found->m_export.e_fsid);
+-		mountlist_add(dom, path);
+ 	}
+ 	qword_eol(f);
+  out:
+@@ -373,8 +369,6 @@ void cache_export_ent(char *domain, stru
+ 	qword_eol(f);
+ 
+ 	fclose(f);
+-
+-	mountlist_add(domain, exp->e_path);
+ }
+ 
+ void cache_export(nfs_export *exp)
+@@ -393,9 +387,6 @@ void cache_export(nfs_export *exp)
+ 	
+ 	fclose(f);
+ 
+-	if (strcmp(inet_ntoa(exp->m_client->m_addrlist[0]), exp->m_client->m_hostname))
+-		mountlist_add(inet_ntoa(exp->m_client->m_addrlist[0]), exp->m_client->m_hostname);
+-
+ 	cache_export_ent(exp->m_client->m_hostname, &exp->m_export);
+ }
+ 
+--- nfs-utils-1.0.9/utils/mountd/mountd.c.~1~
++++ nfs-utils-1.0.9/utils/mountd/mountd.c
+@@ -37,6 +37,7 @@ static void		usage(const char *, int exi
+ static exports		get_exportlist(void);
+ static struct nfs_fh_len *get_rootfh(struct svc_req *, dirpath *, mountstat3 *, int v3);
+ 
++int reverse_resolve = 0;
+ int new_cache = 0;
+ 
+ /* PRC: a high-availability callout program can be specified with -H
+@@ -66,6 +67,7 @@ static struct option longopts[] =
+ 	{ "ha-callout", 1, 0, 'H' },
+ 	{ "state-directory-path", 1, 0, 's' },
+ 	{ "num-threads", 1, 0, 't' },
++	{ "reverse-lookup", 0, 0, 'r' },
+ 	{ NULL, 0, 0, 0 }
+ };
+ 
+@@ -225,14 +227,11 @@ mount_umnt_1_svc(struct svc_req *rqstp, 
+ 	if (!(exp = auth_authenticate("unmount", sin, p))) {
+ 		return 1;
+ 	}
+-	if (new_cache) {
+-		if (strcmp(inet_ntoa(exp->m_client->m_addrlist[0]), exp->m_client->m_hostname))
+-			mountlist_del(inet_ntoa(exp->m_client->m_addrlist[0]), exp->m_client->m_hostname);
+-		mountlist_del(exp->m_client->m_hostname, p);
+-	} else {
+-		mountlist_del(exp->m_client->m_hostname, p);
++
++	if (!new_cache)
+ 		export_reset (exp);
+-	}
++
++	mountlist_del(inet_ntoa(sin->sin_addr), p);
+ 	return 1;
+ }
+ 
+@@ -421,8 +420,10 @@ get_rootfh(struct svc_req *rqstp, dirpat
+ 		fh = cache_get_filehandle(exp, v3?64:32, p);
+ 		if (fh == NULL) 
+ 			*error = NFSERR_ACCES;
+-		else
++		else {
+ 			*error = NFS_OK;
++			mountlist_add(inet_ntoa(sin->sin_addr), p);
++		}
+ 		return fh;
+ 	} else {
+ 		struct nfs_fh_len  *fh;
+@@ -443,7 +444,7 @@ get_rootfh(struct svc_req *rqstp, dirpat
+ 						stb.st_dev, stb.st_ino);
+ 		}
+ 		if (fh != NULL) {
+-			mountlist_add(exp->m_client->m_hostname, p);
++			mountlist_add(inet_ntoa(sin->sin_addr), p);
+ 			*error = NFS_OK;
+ 			export_reset (exp);
+ 			return fh;
+@@ -558,7 +559,7 @@ main(int argc, char **argv)
+ 
+ 	/* Parse the command line options and arguments. */
+ 	opterr = 0;
+-	while ((c = getopt_long(argc, argv, "o:n:Fd:f:p:P:hH:N:V:vs:t:", longopts, NULL)) != EOF)
++	while ((c = getopt_long(argc, argv, "o:n:Fd:f:p:P:hH:N:V:vrs:t:", longopts, NULL)) != EOF)
+ 		switch (c) {
+ 		case 'o':
+ 			descriptors = atoi(optarg);
+@@ -598,6 +599,9 @@ main(int argc, char **argv)
+ 		case 'n':
+ 			_rpcfdtype = SOCK_DGRAM;
+ 			break;
++		case 'r':
++			reverse_resolve = 1;
++			break;
+ 		case 's':
+ 			if ((state_dir = xstrdup(optarg)) == NULL) {
+ 				fprintf(stderr, "%s: xstrdup(%s) failed!\n",
+--- nfs-utils-1.0.9/utils/mountd/rmtab.c.~1~
++++ nfs-utils-1.0.9/utils/mountd/rmtab.c
+@@ -25,6 +25,8 @@
+ 
+ #include <limits.h> /* PATH_MAX */
+ 
++extern int reverse_resolve;
++
+ /* If new path is a link do not destroy it but place the
+  * file where the link points.
+  */
+@@ -185,6 +187,8 @@ mountlist_list(void)
+ 	struct rmtabent		*rep;
+ 	struct stat		stb;
+ 	int			lockid;
++	struct in_addr		addr;
++	struct hostent		*he;
+ 
+ 	if ((lockid = xflock(_PATH_RMTAB, "r")) < 0)
+ 		return NULL;
+@@ -204,7 +208,14 @@ mountlist_list(void)
+ 		setrmtabent("r");
+ 		while ((rep = getrmtabent(1, NULL)) != NULL) {
+ 			m = (mountlist) xmalloc(sizeof(*m));
+-			m->ml_hostname = xstrdup(rep->r_client);
++
++			if (reverse_resolve &&
++			   inet_aton((const char *) rep->r_client, &addr) &&
++			   (he = gethostbyaddr(&addr, sizeof(addr), AF_INET)))
++				m->ml_hostname = xstrdup(he->h_name);
++			else
++				m->ml_hostname = xstrdup(rep->r_client);
++
+ 			m->ml_directory = xstrdup(rep->r_path);
+ 			m->ml_next = mlist;
+ 			mlist = m;
+--- nfs-utils-1.0.9/utils/mountd/mountd.man.~1~
++++ nfs-utils-1.0.9/utils/mountd/mountd.man
+@@ -125,6 +125,13 @@ If this option is not specified the defa
+ .BR /var/lib/nfs
+ is used.
+ .TP
++.BI "\-r," "" " \-\-reverse\-lookup"
++mountd tracks IP addresses in the rmtab, and when a DUMP request is made (by
++someone running showmount -a, for instance), it returns IP addresses instead
++of hostnames by default. This option causes mountd to do a reverse
++lookup on each IP address and return that hostname instead. Enabling this can
++have a substantial negative effect on performance in some situations.
++.TP
+ .BR "\-t N" " or " "\-\-num\-threads=N"
+ This option specifies the number of worker threads that rpc.mountd
+ spawns.  The default is 1 thread, which is probably enough.  More
+--- nfs-utils-1.0.9/utils/showmount/showmount.man.~1~
++++ nfs-utils-1.0.9/utils/showmount/showmount.man
+@@ -25,8 +25,10 @@ appear as though it were processed throu
+ .SH OPTIONS
+ .TP
+ .BR \-a " or " \-\-all
+-List both the client hostname and mounted directory in
+-host:dir format.
++List both the client hostname or IP address and mounted directory in
++host:dir format. This info should not be considered reliable. See the notes
++on rmtab in 
++.BR rpc.mountd (8).
+ .TP
+ .BR \-d " or " \-\-directories
+ List only the directories mounted by some client.

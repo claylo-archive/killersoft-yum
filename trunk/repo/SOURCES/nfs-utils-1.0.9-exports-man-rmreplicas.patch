@@ -1,0 +1,19 @@
+--- nfs-utils-1.0.9/utils/exportfs/exports.man.orig	2007-09-25 11:08:52.592299000 -0400
++++ nfs-utils-1.0.9/utils/exportfs/exports.man	2007-09-25 12:59:37.763204000 -0400
+@@ -304,11 +304,11 @@
+ (Note that the server currently needs to have a filesystem mounted here,
+ generally using mount --bind, although it is not actually exported.)
+ 
+-.TP
+-.IR replicas= path@host[+host][:path@host[+host]]
+-If the client asks for alternative locations for the export point, it
+-will be given this list of alternatives. (Note that actual replication
+-of the filesystem must be handled elsewhere.)
++'''.TP
++'''.IR replicas= path@host[+host][:path@host[+host]]
++'''If the client asks for alternative locations for the export point, it
++'''will be given this list of alternatives. (Note that actual replication
++'''of the filesystem must be handled elsewhere.)
+ 
+ .SS User ID Mapping
+ .PP

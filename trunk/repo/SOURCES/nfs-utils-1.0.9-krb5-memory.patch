@@ -1,0 +1,11 @@
+--- nfs-utils-1.0.9/utils/gssd/krb5_util.c~	2006-07-07 20:04:32.000000000 -0400
++++ nfs-utils-1.0.9/utils/gssd/krb5_util.c	2006-08-08 09:33:38.000000000 -0400
+@@ -379,7 +379,7 @@
+ 	 * Initialize cache file which we're going to be using
+ 	 */
+ 
+-	snprintf(cc_name, sizeof(cc_name), "FILE:%s/%s%s_%s",
++	snprintf(cc_name, sizeof(cc_name), "MEMORY:%s/%s%s_%s",
+ 		GSSD_DEFAULT_CRED_DIR, GSSD_DEFAULT_CRED_PREFIX,
+ 		GSSD_DEFAULT_MACHINE_CRED_SUFFIX, ple->realm);
+ 	ple->endtime = my_creds.times.endtime;
