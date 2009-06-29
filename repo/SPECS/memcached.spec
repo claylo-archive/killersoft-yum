@@ -1,3 +1,5 @@
+# $Id$
+%define optflags -g -O2
 Name:           memcached
 Version:        1.4.0
 Release:        rc1.1
@@ -21,17 +23,25 @@ memcached is a high-performance, distributed memory object caching
 system, generic in nature, but intended for use in speeding up dynamic
 web applications by alleviating database load.
 
+%package devel
+Summary: Header files, libraries and development documentation for %{name}
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+
+%description devel
+This package contains the header files, static libraries and development
+documentation for %{name}. If you like to develop programs using %{name},
+you will need to install %{name}-devel.
+
+
 %prep
 %setup -q -n %{name}-%{version}-rc1
 
 
 %build
+CFLAGS="$RPM_OPT_FLAGS"; export CFLAGS
 %configure --disable-dependency-tracking
-
-make %{?_smp_mflags}
-
-%check
-make test
+make
 
 %install
 rm -rf %{buildroot}
@@ -84,6 +94,10 @@ exit 0
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING NEWS README TODO doc/CONTRIBUTORS doc/*.txt
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+
+%files devel
+%defattr(-,root,root,0755)
+%{_includedir}/memcached/*.h
 
 %dir %attr(750,nobody,nobody) %{_localstatedir}/run/memcached
 %{_bindir}/memcached-tool
