@@ -8,7 +8,7 @@ Epoch: 1
 # group all 32bit related archs
 %define all_32bit_archs i386 i686 athlon
 
-Source0: http://www.kernel.org/pub/linux/utils/nfs/nfs-utils-1.0.10.tar.bz2
+Source0: http://www.kernel.org/pub/linux/utils/nfs/nfs-utils-1.0.9.tar.bz2
 Source1: ftp://nfs.sourceforge.net/pub/nfs/nfs.doc.tar.gz
 
 Source10: nfs.init
