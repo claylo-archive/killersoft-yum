@@ -97,7 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/imap
 %{_libdir}/c-client.a
 %{_libdir}/libc-client.a
-$RPM_BUILD_ROOT/usr/imap-%{version}
+/usr/imap-%{version}
 
 %changelog
 * Thu Jul  2 2009 Clay Loveless <clay@killersoft.com>
