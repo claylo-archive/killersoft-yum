@@ -5,7 +5,7 @@
 Summary: C-client mail access routines for IMAP and POP protocols
 Name: libc-client
 Version: 2007e
-Release: 1
+Release: 2
 License: University of Washington Free-Fork License
 Group: System Environment/Daemons
 URL: http://www.washington.edu/imap/
@@ -66,6 +66,13 @@ install -m 644 ./c-client/*.h $RPM_BUILD_ROOT%{_includedir}/imap
 install -m 644 ./c-client/linkage.c $RPM_BUILD_ROOT%{_includedir}/imap
 install -m 644 ./src/osdep/tops-20/shortsym.h $RPM_BUILD_ROOT%{_includedir}/imap
 
+# php friendly install
+mkdir -p $RPM_BUILD_ROOT/usr/imap-%{version}/lib
+mkdir -p $RPM_BUILD_ROOT/usr/imap-%{version}/include
+install -m 644 -T ./c-client/c-client.a $RPM_BUILD_ROOT/usr/imap-%{version}/lib/libc-client.a
+install -m 644 ./c-client/*.c $RPM_BUILD_ROOT/usr/imap-%{version}/lib
+install -m 644 ./c-client/*.h $RPM_BUILD_ROOT/usr/imap-%{version}/include
+
 #mkdir -p $RPM_BUILD_ROOT/%{_datadir}/ssl/certs
 
 # don't ship quite so many docs
@@ -90,8 +97,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/imap
 %{_libdir}/c-client.a
 %{_libdir}/libc-client.a
+$RPM_BUILD_ROOT/usr/imap-%{version}
 
 %changelog
+* Thu Jul  2 2009 Clay Loveless <clay@killersoft.com>
+- Added separate devel directory based on PHP docs
+  http://www.php.net/manual/en/imap.requirements.php
+
 * Sun Jun 28 2009 Clay Loveless <clay@killersoft.com>
 - Updated to release 2007e
 
