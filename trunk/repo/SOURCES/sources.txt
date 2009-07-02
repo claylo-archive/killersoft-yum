@@ -1,5 +1,5 @@
 http://www.apache.org/dist/httpd/httpd-2.2.11.tar.gz
-http://downloads.php.net/johannes/php-5.3.0RC4.tar.gz
+http://www.php.net/distributions/php-5.3.0.tar.bz2
 http://curl.haxx.se/download/curl-7.19.5.tar.bz2
 http://c-ares.haxx.se/c-ares-1.6.0.tar.gz
 http://superb-west.dl.sourceforge.net/sourceforge/libssh2/libssh2-1.1.tar.gz
