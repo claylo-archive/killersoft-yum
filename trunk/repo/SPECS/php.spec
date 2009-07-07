@@ -15,7 +15,6 @@
 #   --enable-debug (or not)
 
 %define contentdir /var/www
-%define extsubdir php/extensions/no-debug-non-zts-20090626
 
 Summary: PHP: Hypertext Preprocessor
 Name: php
@@ -774,7 +773,7 @@ cp $RPM_BUILD_ROOT%{_sysconfdir}/php.cli.d/extensions/*.ini $RPM_BUILD_ROOT%{_sy
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -f $RPM_BUILD_ROOT/etc/httpd/conf/httpd.conf $RPM_BUILD_ROOT/etc/httpd/conf/httpd.conf.bak
 
 # Remove unpackaged files
-rm -rf $RPM_BUILD_ROOT%{_libdir}/%{extsubdir}/*.a
+rm -rf $RPM_BUILD_ROOT%{_libdir}/php/extensions/no-debug-non-zts-20090626/*.a
 
 # Remove irrelevant docs
 rm -f README.{Zeus,QNX,CVS-RULES,WIN32-BUILD-SYSTEM}
@@ -854,175 +853,175 @@ popd
 
 
 %files enchant
-%attr(755,root,root) %{_libdir}/%{extsubdir}/enchant.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/enchant.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/enchant.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/enchant.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/enchant.ini
 
 %files imap
-%attr(755,root,root) %{_libdir}/%{extsubdir}/imap.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/imap.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/imap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/imap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/imap.ini
 
 %files oci8
-%attr(755,root,root) %{_libdir}/%{extsubdir}/oci8.so
-%attr(755,root,root) %{_libdir}/%{extsubdir}/pdo_oci.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/oci8.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/pdo_oci.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/oci8.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/oci8.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/oci8.ini
 
 %files pgsql
-%attr(755,root,root) %{_libdir}/%{extsubdir}/pgsql.so
-%attr(755,root,root) %{_libdir}/%{extsubdir}/pdo_pgsql.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/pgsql.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/pdo_pgsql.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/pgsql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/pgsql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/pgsql.ini
 
 %files mysql
-%attr(755,root,root) %{_libdir}/%{extsubdir}/mysql.so
-%attr(755,root,root) %{_libdir}/%{extsubdir}/mysqli.so
-%attr(755,root,root) %{_libdir}/%{extsubdir}/pdo_mysql.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/mysql.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/mysqli.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/pdo_mysql.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/mysql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/mysql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/mysql.ini
 
 %files odbc
-%attr(755,root,root) %{_libdir}/%{extsubdir}/odbc.so
-%attr(755,root,root) %{_libdir}/%{extsubdir}/pdo_odbc.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/odbc.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/pdo_odbc.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/odbc.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/odbc.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/odbc.ini
 
 %files tidy
-%attr(755,root,root) %{_libdir}/%{extsubdir}/tidy.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/tidy.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/tidy.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/tidy.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/tidy.ini
 
 %files mssql
-%attr(755,root,root) %{_libdir}/%{extsubdir}/mssql.so
-%attr(755,root,root) %{_libdir}/%{extsubdir}/pdo_dblib.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/mssql.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/pdo_dblib.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/mssql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/mssql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/mssql.ini
 
 %files readline
-%attr(755,root,root) %{_libdir}/%{extsubdir}/readline.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/readline.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/readline.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/readline.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/readline.ini
 
 %files ldap
-%attr(755,root,root) %{_libdir}/%{extsubdir}/ldap.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/ldap.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/ldap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/ldap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/ldap.ini
 
 %files snmp
-%attr(755,root,root) %{_libdir}/%{extsubdir}/snmp.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/snmp.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/snmp.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/snmp.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/snmp.ini
 
 %files dba
-%attr(755,root,root) %{_libdir}/%{extsubdir}/dba.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/dba.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/dba.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/dba.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/dba.ini
 
 %files soap
-%attr(755,root,root) %{_libdir}/%{extsubdir}/soap.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/soap.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/soap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/soap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/soap.ini
 
 %files xmlrpc
-%attr(755,root,root) %{_libdir}/%{extsubdir}/xmlrpc.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/xmlrpc.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/xmlrpc.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/xmlrpc.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/xmlrpc.ini
 
 %files mbstring
-%attr(755,root,root) %{_libdir}/%{extsubdir}/mbstring.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/mbstring.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/mbstring.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/mbstring.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/mbstring.ini
 
 %files gd
-%attr(755,root,root) %{_libdir}/%{extsubdir}/gd.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/gd.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/gd.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/gd.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/gd.ini
 
 %files bcmath
-%attr(755,root,root) %{_libdir}/%{extsubdir}/bcmath.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/bcmath.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/bcmath.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/bcmath.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/bcmath.ini
 
 %files mcrypt
-%attr(755,root,root) %{_libdir}/%{extsubdir}/mcrypt.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/mcrypt.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/mcrypt.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/mcrypt.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/mcrypt.ini
 
 %files exif
-%attr(755,root,root) %{_libdir}/%{extsubdir}/exif.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/exif.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/exif.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/exif.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/exif.ini
 
 %files bz2
-%attr(755,root,root) %{_libdir}/%{extsubdir}/bz2.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/bz2.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/bz2.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/bz2.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/bz2.ini
 
 %files gmp
-%attr(755,root,root) %{_libdir}/%{extsubdir}/gmp.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/gmp.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/gmp.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/gmp.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/gmp.ini
 
 %files wddx
-%attr(755,root,root) %{_libdir}/%{extsubdir}/wddx.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/wddx.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/wddx.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/wddx.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/wddx.ini
 
 %files calendar
-%attr(755,root,root) %{_libdir}/%{extsubdir}/calendar.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/calendar.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/calendar.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/calendar.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/calendar.ini
 
 %files gettext
-%attr(755,root,root) %{_libdir}/%{extsubdir}/gettext.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/gettext.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/gettext.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/gettext.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/gettext.ini
 
 %files xsl
-%attr(755,root,root) %{_libdir}/%{extsubdir}/xsl.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/xsl.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/xsl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/xsl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/xsl.ini
 
 %files zip
-%attr(755,root,root) %{_libdir}/%{extsubdir}/zip.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/zip.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/zip.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/zip.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/zip.ini
 
 %files intl
-%attr(755,root,root) %{_libdir}/%{extsubdir}/intl.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/intl.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/intl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/intl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/intl.ini
 
 %files pcntl
-%attr(755,root,root) %{_libdir}/%{extsubdir}/pcntl.so
+%attr(755,root,root) %{_libdir}/php/extensions/no-debug-non-zts-20090626/pcntl.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/pcntl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/pcntl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/pcntl.ini
