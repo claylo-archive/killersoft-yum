@@ -1,5 +1,5 @@
 # $Id: curl.spec 10752 2008-09-08 06:13:40Z clay $
-# yum install -y libssh2-devel openssl-devel libidn-devel openldap-devel c-ares-devel
+# yum install -y libssh2-devel openssl-devel libidn-devel openldap-devel c-ares-devel gnutls-devel
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.19.5
