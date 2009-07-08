@@ -3,7 +3,7 @@
 Summary: A utility for getting files from remote servers (FTP, HTTP, and others).
 Name: curl 
 Version: 7.19.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: MIT
 Group: Applications/Internet
 Source0: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
@@ -11,7 +11,7 @@ Source0: http://curl.haxx.se/download/%{name}-%{version}.tar.bz2
 URL: http://curl.haxx.se/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: openssl-devel, libtool, pkgconfig, libssh2-devel zlib-devel
-BuildRequires: libidn-devel, openldap-devel, c-ares-devel
+BuildRequires: libidn-devel, openldap-devel, c-ares-devel gnutls-devel
 Requires: openssl zlib libssh2 openldap c-ares
 
 %description
@@ -49,7 +49,7 @@ fi
 %configure --with-ssl=/usr --with-zlib=/usr --enable-ares=/usr \
        --enable-ftp --enable-http --disable-manual --with-libssh2=/usr \
        --enable-ldap --enable-dict --enable-verbose --enable-cookies --enable-ipv6 --enable-ldaps \
-       --enable-proxy --enable-file --enable-telnet
+       --enable-proxy --disable-file --enable-telnet --with-gnutls=/usr
 make
 
 %install
