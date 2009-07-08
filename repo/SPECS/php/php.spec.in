@@ -6,7 +6,7 @@
 #   libc-client-devel libtidy-devel cyrus-sasl-devel openldap-devel \
 #   postgresql-devel unixODBC-devel net-snmp-devel readline-devel \
 #   freetds-devel libXpm-devel freetype-devel gnutls-devel libicu-devel \
-#   libxslt-devel t1lib-devel libmcrypt-devel
+#   libxslt-devel t1lib-devel libmcrypt-devel gettext-devel
 # rpm -Uvh http://s3.killersoft.com/rpms/oracle-instantclient11.1-basic-11.1.0.7.0-1.i386.rpm
 # rpm -Uvh http://s3.killersoft.com/rpms/oracle-instantclient11.1-devel-11.1.0.7.0-1.i386.rpm
 
@@ -73,7 +73,7 @@ Provides: php-reflection{:dbg}, php-session{:dbg}, php-shmop{:dbg}, php-simplexm
 Provides: php-spl{:dbg}, php-sysvsem{:dbg}, php-sysvshm{:dbg}, php-sysvmsg{:dbg}, php-tokenizer{:dbg}
 Provides: php-zlib{:dbg}, php-json{:dbg}
 Obsoletes: php-openssl{:dbg}, php-curl{:dbg}, php-mhash{:dbg}
-Obsoletes: php-pecl-json, php-pecl-fileinfo, php-pecl-zip, php-mysql, php-mcrypt
+Obsoletes: php-pecl-json, php-pecl-fileinfo
 Conflicts: php-common{:dbgc}
 
 %description common{:dbg}
@@ -464,7 +464,6 @@ ln -sf ../configure
 sh ./configure \
   --prefix=%{_prefix} \
   --sysconfdir=%{_sysconfdir} \
-  --libdir=%{_libdir} \
   --with-libdir=%{_lib} \
   --mandir=%{_prefix}/share/man \
   --with-pic \
@@ -501,7 +500,7 @@ if test $? != 0; then
 fi
 
 # fix makefile extensions dir
-sed -i -e 's|%{_prefix}/lib/extensions|%{_libdir}/php/extensions|' Makefile
+#sed -i -e 's|%{_prefix}/lib/extensions|%{_libdir}/php/extensions|' Makefile
 
 make %{?_smp_mflags}
 }
