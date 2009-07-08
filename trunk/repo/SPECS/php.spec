@@ -6,7 +6,7 @@
 #   libc-client-devel libtidy-devel cyrus-sasl-devel openldap-devel \
 #   postgresql-devel unixODBC-devel net-snmp-devel readline-devel \
 #   freetds-devel libXpm-devel freetype-devel gnutls-devel libicu-devel \
-#   libxslt-devel t1lib-devel libmcrypt-devel
+#   libxslt-devel t1lib-devel libmcrypt-devel gettext-devel
 # rpm -Uvh http://s3.killersoft.com/rpms/oracle-instantclient11.1-basic-11.1.0.7.0-1.i386.rpm
 # rpm -Uvh http://s3.killersoft.com/rpms/oracle-instantclient11.1-devel-11.1.0.7.0-1.i386.rpm
 
@@ -19,7 +19,7 @@
 Summary: PHP: Hypertext Preprocessor
 Name: php
 Version: 5.3.0
-Release: 1
+Release: 2
 Group: Development/Languages
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Obsoletes: php-dbg, php3, phpfi, stronghold-php
@@ -73,7 +73,7 @@ Provides: php-reflection, php-session, php-shmop, php-simplexml
 Provides: php-spl, php-sysvsem, php-sysvshm, php-sysvmsg, php-tokenizer
 Provides: php-zlib, php-json
 Obsoletes: php-openssl, php-curl, php-mhash
-Obsoletes: php-pecl-json, php-pecl-fileinfo, php-pecl-zip, php-mysql, php-mcrypt
+Obsoletes: php-pecl-json, php-pecl-fileinfo
 Conflicts: php-common-dbg
 
 %description common
@@ -464,7 +464,6 @@ ln -sf ../configure
 sh ./configure \
   --prefix=%{_prefix} \
   --sysconfdir=%{_sysconfdir} \
-  --libdir=%{_libdir} \
   --with-libdir=%{_lib} \
   --mandir=%{_prefix}/share/man \
   --with-pic \
@@ -501,7 +500,7 @@ if test $? != 0; then
 fi
 
 # fix makefile extensions dir
-sed -i -e 's|%{_prefix}/lib/extensions|%{_libdir}/php/extensions|' Makefile
+#sed -i -e 's|%{_prefix}/lib/extensions|%{_libdir}/php/extensions|' Makefile
 
 make %{?_smp_mflags}
 }
