@@ -846,7 +846,7 @@ popd
 %{_bindir}/php-config
 %{_bindir}/phpize
 %{_includedir}/php
-%{_libdir}/build
+%{_libdir}/php/build
 %{_mandir}/man1/php-config.1*
 %{_mandir}/man1/phpize.1*
 
