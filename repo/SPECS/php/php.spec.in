@@ -19,7 +19,7 @@
 Summary: PHP: Hypertext Preprocessor
 Name: php
 Version: 5.3.0
-Release: 2
+Release: 3
 Group: Development/Languages
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Obsoletes: php-dbg, php3, phpfi, stronghold-php
@@ -63,7 +63,7 @@ The php-cli package contains the command-line interface.
 %package common{:dbg}
 Group: Development/Languages
 Summary: Common files for PHP
-Requires: php = %{version}-%{release}, autoconf213, automake
+Requires: php{:dbg} = %{version}-%{release}
 Requires: libxml2 < 2.7.0, curl, openssl, expat
 Provides: php-api = %{apiver}, php-zend-api = %{zendver}
 Provides: php-ctype{:dbg}, php-curl{:dbg}, php-date{:dbg}
@@ -550,15 +550,23 @@ build --enable-cli --disable-cgi {:dbgenable}\
 popd
 
 pushd build-cgi{:dbg}
+# mysql shared extensions needed to trigger inclusion of mysqlnd internally
 build --enable-cgi --disable-cli --without-pear {:dbgenable}\
       --with-config-file-path=%{_sysconfdir}/php.cgi.d \
+      --with-mysql=shared,mysqlnd \
+      --with-mysqli=shared,mysqlnd \
+      --with-pdo-mysql=shared,mysqlnd \      
       --with-config-file-scan-dir=%{_sysconfdir}/php.cgi.d/extensions
 popd
 
 pushd build-apache{:dbg}
+# mysql shared extensions needed to trigger inclusion of mysqlnd internally
 build --with-apxs2=%{_sbindir}/apxs --disable-cli --without-pear {:dbgenable}\
       --disable-dba --without-unixODBC \
       --with-config-file-path=%{_sysconfdir}/php.mod.d \
+      --with-mysql=shared,mysqlnd \
+      --with-mysqli=shared,mysqlnd \
+      --with-pdo-mysql=shared,mysqlnd \
       --with-config-file-scan-dir=%{_sysconfdir}/php.mod.d/extensions
 popd
 
@@ -1027,7 +1035,12 @@ popd
 
 %changelog
 
-* Fri Jul  3 2009 Clay Loveless <clay@killersoft.com>
+* Tue Jul  7 2009 Clay Loveless <clay@killersoft.com> 5.3.0-2, 5.3.0-3
+- Fixed paths for extension inclusion
+- Fixed builds for cli, cgi, mod_php so that mysqlnd is enabled inside each.
+- Fixed bogus obsoletes setting for php-mysql in php-common
+
+* Fri Jul  3 2009 Clay Loveless <clay@killersoft.com> 5.3.0-1
 - Updated to PHP 5.3.0
 - Restored shared builds for subpackages of most extensions
   bundled with PHP.
