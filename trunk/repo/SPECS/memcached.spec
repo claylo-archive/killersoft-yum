@@ -2,7 +2,7 @@
 %define optflags -g -O2
 Name:           memcached
 Version:        1.4.0
-Release:        rc1.1
+Release:        rc1.2
 Summary:        High Performance, Distributed Memory Object Cache
 
 Group:          System Environment/Daemons
@@ -94,16 +94,16 @@ exit 0
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING NEWS README TODO doc/CONTRIBUTORS doc/*.txt
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-
-%files devel
-%defattr(-,root,root,0755)
-%{_includedir}/memcached/*.h
-
 %dir %attr(750,nobody,nobody) %{_localstatedir}/run/memcached
 %{_bindir}/memcached-tool
 %{_bindir}/memcached
 %{_mandir}/man1/memcached.1*
 %{_initrddir}/memcached
+
+%files devel
+%defattr(-,root,root,0755)
+%{_includedir}/memcached/*.h
+
 
 
 %changelog
