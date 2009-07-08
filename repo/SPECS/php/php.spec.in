@@ -555,7 +555,7 @@ build --enable-cgi --disable-cli --without-pear {:dbgenable}\
       --with-config-file-path=%{_sysconfdir}/php.cgi.d \
       --with-mysql=shared,mysqlnd \
       --with-mysqli=shared,mysqlnd \
-      --with-pdo-mysql=shared,mysqlnd \      
+      --with-pdo-mysql=shared,mysqlnd \
       --with-config-file-scan-dir=%{_sysconfdir}/php.cgi.d/extensions
 popd
 
