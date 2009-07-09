@@ -21,3 +21,4 @@ http://pecl.php.net/get/pecl_http-1.6.3.tgz
 http://pecl.php.net/get/spidermonkey-0.1.2.tgz
 http://pecl.php.net/get/memcached-1.0.0.tgz
 http://pecl.php.net/get/oauth-0.99.9.tgz
+http://pecl.php.net/get/APC-3.1.2.tgz
