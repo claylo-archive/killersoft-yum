@@ -1,0 +1,117 @@
+diff -uNr pecl_http-1.6.3/http_message_api.c pecl_http-1.6.3.patched/http_message_api.c
+--- pecl_http-1.6.3/http_message_api.c	2009-02-12 12:15:12.000000000 -0500
++++ pecl_http-1.6.3.patched/http_message_api.c	2009-03-18 06:55:04.000000000 -0400
+@@ -397,13 +397,41 @@
+ 			zval **single_header;
+ 
+ 			switch (Z_TYPE_PP(header)) {
++				case IS_BOOL:
++					phpstr_appendf(&str, "%s: %s" HTTP_CRLF, key.str, Z_BVAL_PP(header)?"true":"false");
++					break;
++					
++				case IS_LONG:
++					phpstr_appendf(&str, "%s: %ld" HTTP_CRLF, key.str, Z_LVAL_PP(header));
++					break;
++					
++				case IS_DOUBLE:
++					phpstr_appendf(&str, "%s: %f" HTTP_CRLF, key.str, Z_DVAL_PP(header));
++					break;
++
+ 				case IS_STRING:
+ 					phpstr_appendf(&str, "%s: %s" HTTP_CRLF, key.str, Z_STRVAL_PP(header));
+ 					break;
+ 
+ 				case IS_ARRAY:
+ 					FOREACH_VAL(pos2, *header, single_header) {
+-						phpstr_appendf(&str, "%s: %s" HTTP_CRLF, key.str, Z_STRVAL_PP(single_header));
++						switch (Z_TYPE_PP(single_header)) {
++							case IS_BOOL:
++								phpstr_appendf(&str, "%s: %s" HTTP_CRLF, key.str, Z_BVAL_PP(single_header)?"true":"false");
++								break;
++								
++							case IS_LONG:
++								phpstr_appendf(&str, "%s: %ld" HTTP_CRLF, key.str, Z_LVAL_PP(single_header));
++								break;
++								
++							case IS_DOUBLE:
++								phpstr_appendf(&str, "%s: %f" HTTP_CRLF, key.str, Z_DVAL_PP(single_header));
++								break;
++								
++							case IS_STRING:
++								phpstr_appendf(&str, "%s: %s" HTTP_CRLF, key.str, Z_STRVAL_PP(single_header));
++								break;
++						}
+ 					}
+ 					break;
+ 			}
+@@ -573,17 +601,17 @@
+ #ifdef HTTP_HAVE_CURL
+ 			char *uri = NULL;
+ 			http_request request;
+-			zval **zhost, options, headers;
++			zval **zhost, *options, *headers;
+ 
+-			INIT_PZVAL(&options);
+-			INIT_PZVAL(&headers);
+-			array_init(&options);
+-			array_init(&headers);
+-			zend_hash_copy(Z_ARRVAL(headers), &message->hdrs, (copy_ctor_func_t) zval_add_ref, NULL, sizeof(zval *));
+-			add_assoc_zval(&options, "headers", &headers);
++			MAKE_STD_ZVAL(options);
++			MAKE_STD_ZVAL(headers);
++			array_init(options);
++			array_init(headers);
++			zend_hash_copy(Z_ARRVAL_P(headers), &message->hdrs, (copy_ctor_func_t) zval_add_ref, NULL, sizeof(zval *));
++			add_assoc_zval(options, "headers", headers);
+ 
+ 			/* check host header */
+-			if (SUCCESS == zend_hash_find(&message->hdrs, "Host", sizeof("Host"), (void *) &zhost)) {
++			if (SUCCESS == zend_hash_find(&message->hdrs, "Host", sizeof("Host"), (void *) &zhost) && Z_TYPE_PP(zhost) == IS_STRING) {
+ 				char *colon = NULL;
+ 				php_url parts, *url = php_url_parse(message->http.info.request.url);
+ 				
+@@ -609,7 +637,7 @@
+ 				
+ 				http_request_init_ex(&request, NULL, request.meth, uri);
+ 				request.body = http_request_body_init_ex(&body, HTTP_REQUEST_BODY_CSTRING, PHPSTR_VAL(message), PHPSTR_LEN(message), 0);
+-				if (SUCCESS == (rs = http_request_prepare(&request, NULL))) {
++				if (SUCCESS == (rs = http_request_prepare(&request, Z_ARRVAL_P(options)))) {
+ 					http_request_exec(&request);
+ 				}
+ 				http_request_dtor(&request);
+@@ -619,6 +647,7 @@
+ 					message->http.info.request.method);
+ 			}
+ 			efree(uri);
++			zval_ptr_dtor(&options);
+ #else
+ 			http_error(HE_WARNING, HTTP_E_RUNTIME, "HTTP requests not supported - ext/http was not linked against libcurl.");
+ #endif
+diff -uNr pecl_http-1.6.3/http_message_object.c pecl_http-1.6.3.patched/http_message_object.c
+--- pecl_http-1.6.3/http_message_object.c	2009-02-12 12:15:12.000000000 -0500
++++ pecl_http-1.6.3.patched/http_message_object.c	2009-03-18 06:55:04.000000000 -0400
+@@ -802,7 +802,7 @@
+ 	
+ 	if (SUCCESS == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &body, &len)) {
+ 		phpstr_dtor(PHPSTR(obj->message));
+-		phpstr_from_string_ex(PHPSTR(obj->message), body, len);		
++		phpstr_from_string_ex(PHPSTR(obj->message), body, len);
+ 	}
+ }
+ /* }}} */
+@@ -1276,6 +1276,7 @@
+ 				zval_ptr_dtor(&array);
+ 				
+ 				if (PHPSTR_VAL(obj->message) && PHPSTR_LEN(obj->message)) {
++					phpstr_fix(PHPSTR(obj->message));
+ 					INIT_PZVAL(&body);
+ 					ZVAL_STRINGL(&body, PHPSTR_VAL(obj->message), PHPSTR_LEN(obj->message), 0);
+ 					if (method != HTTP_POST) {
+@@ -1287,6 +1288,7 @@
+ 						zval_copy_ctor(&body);
+ 						sapi_module.treat_data(PARSE_STRING, Z_STRVAL(body), &post TSRMLS_CC);
+ 						zend_call_method_with_1_params(&return_value, http_request_object_ce, NULL, "setpostfields", NULL, &post);
++						zval_dtor(&post);
+ 					}
+ 				}
+ #else
