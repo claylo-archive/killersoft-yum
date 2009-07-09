@@ -27,3 +27,4 @@ http://pecl.php.net/get/uploadprogress-1.0.1.tgz
 http://launchpadlibrarian.net/28737996/drizzle-2009.07.1088.tar.gz
 http://pecl.php.net/get/markdown-0.1.0.tgz
 http://pecl.php.net/get/syck-0.9.3.tgz
+http://pecl.php.net/get/geoip-1.0.7.tgz
