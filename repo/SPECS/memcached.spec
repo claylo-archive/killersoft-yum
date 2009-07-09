@@ -107,6 +107,9 @@ exit 0
 
 
 %changelog
+* Wed Jul  8 2009 Clay Loveless <clay@killersoft.com> 1.4.0-rc1-2
+- Fixed file list between regular and devel packages
+
 * Sun Jun 28 2009 Clay Loveless <clay@killersoft.com> 1.4.0-rc1-1
 - Updated for 1.4.0-rc1
 
