@@ -1,9 +1,26 @@
 # $Id$
 # yum install -y libssh2-devel openssl-devel libidn-devel openldap-devel c-ares-devel gnutls-devel curl-devel php-devel
 %define php_extdir %(php-config --extension-dir 2>/dev/null || echo %{_libdir}/php4)
+%define php_config_opts %(php-config --configuration-options 2>/dev/null)
+%define peclname %{lua:
+
+name = "php-pecl-http"
+
+php_config_opts = rpm.expand("%{php_config_opts}")
+if (string.find(php_config_opts, "--enable-debug", 1, true)) then
+  name = "php-dbg" .. string.sub(name, 4)
+end
+print(name)
+}
+%{lua: 
+current_name = rpm.expand("%{peclname}")
+if (string.find(current_name, "-dbg", 1, true)) then
+  rpm.define("_dbg -dbg")
+end
+}
 
 Summary: PECL package to handle HTTP/HTTPS requests
-Name: php-pecl-http
+Name: %{peclname}
 Version: 1.6.3
 Release: 3
 License: PHP
@@ -12,8 +29,8 @@ URL: http://pecl.php.net/package/pecl_http
 Source: http://pecl.php.net/get/pecl_http-%{version}.tgz
 Patch0: pecl_http-1.6.3.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: php, curl
-BuildRequires: php, php-devel, curl-devel, c-ares-devel, libidn-devel, openldap-devel
+Requires: php%{_dbg}, curl
+BuildRequires: php%{_dbg}, php%{_dbg}-devel, curl-devel, c-ares-devel, libidn-devel, openldap-devel
 # Required by phpize
 BuildRequires: autoconf213, automake, libtool, gcc-c++
 

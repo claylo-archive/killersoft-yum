@@ -1,8 +1,25 @@
 # $Id$
 %define php_extdir %(php-config --extension-dir 2>/dev/null || echo %{_libdir}/php4)
+%define php_config_opts %(php-config --configuration-options 2>/dev/null)
+%define peclname %{lua:
+
+name = "php-pecl-geoip"
+
+php_config_opts = rpm.expand("%{php_config_opts}")
+if (string.find(php_config_opts, "--enable-debug", 1, true)) then
+  name = "php-dbg" .. string.sub(name, 4)
+end
+print(name)
+}
+%{lua: 
+current_name = rpm.expand("%{peclname}")
+if (string.find(current_name, "-dbg", 1, true)) then
+  rpm.define("_dbg -dbg")
+end
+}
 
 Summary: PECL package for working with geoip
-Name: php-pecl-geoip
+Name: %{peclname}
 Version: 1.0.7
 Release: 1
 License: PHP
@@ -10,8 +27,8 @@ Group: Development/Languages
 URL: http://pecl.php.net/package/geoip
 Source: http://pecl.php.net/get/geoip-%{version}.tgz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: php, GeoIP
-BuildRequires: php, php-devel, GeoIP-devel
+Requires: php%{_dbg}, GeoIP
+BuildRequires: php%{_dbg}, php%{_dbg}-devel, GeoIP-devel
 # Required by phpize
 BuildRequires: autoconf213, automake, libtool, gcc-c++
 

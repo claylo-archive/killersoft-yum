@@ -1,17 +1,34 @@
 # $Id$
 %define php_extdir %(php-config --extension-dir 2>/dev/null || echo %{_libdir}/php4)
+%define php_config_opts %(php-config --configuration-options 2>/dev/null)
+%define peclname %{lua:
+
+name = "php-pecl-xdebug"
+
+php_config_opts = rpm.expand("%{php_config_opts}")
+if (string.find(php_config_opts, "--enable-debug", 1, true)) then
+  name = "php-dbg" .. string.sub(name, 4)
+end
+print(name)
+}
+%{lua: 
+current_name = rpm.expand("%{peclname}")
+if (string.find(current_name, "-dbg", 1, true)) then
+  rpm.define("_dbg -dbg")
+end
+}
 
 Summary: PECL package providing tracing and profiling functionality
-Name: php-pecl-xdebug
-Version: 2.0.4
+Name: %{peclname}
+Version: 2.0.5
 Release: 1
 License: PHP
 Group: Development/Languages
 URL: http://pecl.php.net/package/xdebug
 Source: http://pecl.php.net/get/xdebug-%{version}.tgz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: php
-BuildRequires: php, php-devel
+Requires: php%{_dbg}
+BuildRequires: php%{_dbg}, php%{_dbg}-devel
 # Required by phpize
 BuildRequires: autoconf213, automake, libtool, gcc-c++
 
@@ -78,6 +95,9 @@ EOF
 
 
 %changelog
+* Tue Jul 14 2009 Clay Loveless <clay@killersoft.com>
+- Update to 2.0.5
+
 * Thu Jul  9 2009 Clay Loveless <clay@killersoft.com>
 - Rebuilding for multiple config locations
 

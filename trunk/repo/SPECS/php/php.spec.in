@@ -6,7 +6,7 @@
 #   libc-client-devel libtidy-devel cyrus-sasl-devel openldap-devel \
 #   postgresql-devel unixODBC-devel net-snmp-devel readline-devel \
 #   freetds-devel libXpm-devel freetype-devel gnutls-devel libicu-devel \
-#   libxslt-devel t1lib-devel libmcrypt-devel gettext-devel
+#   libxslt-devel t1lib-devel libmcrypt-devel gettext-devel oracle-instantclient11.1-devel oracle-instantclient11.1-basic
 # rpm -Uvh http://s3.killersoft.com/rpms/oracle-instantclient11.1-basic-11.1.0.7.0-1.i386.rpm
 # rpm -Uvh http://s3.killersoft.com/rpms/oracle-instantclient11.1-devel-11.1.0.7.0-1.i386.rpm
 
@@ -17,7 +17,7 @@
 %define contentdir /var/www
 
 Summary: PHP: Hypertext Preprocessor
-Name: php
+Name: php{:dbg}
 Version: 5.3.0
 Release: 3
 Group: Development/Languages
@@ -26,7 +26,7 @@ Obsoletes: php-dbg, php3, phpfi, stronghold-php
 URL: http://www.php.net/
 License: PHP License
 Provides: mod_php{:dbg} = %{version}-%{release}
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
 BuildRequires: curl-devel, db4-devel
 BuildRequires: expat-devel, gmp-devel, httpd-devel
 BuildRequires: pam-devel, libstdc++-devel, openssl-devel, zlib-devel, smtpdaemon
@@ -40,152 +40,153 @@ borrowed from C, Java and Perl with a couple of unique PHP-specific
 features thrown in. The goal of the language is to allow web
 developers to write dynamically generated pages quickly.
 
-%package cgi{:dbg}
+%package cgi
 Group: Development/Languages
 Summary: CGI/FastCGI interface for PHP
-Requires: php-common{:dbg} = %{version}-%{release}
-Provides: php-cgi{:dbg} = %{version}-%{release}
-Conflicts: php-cgi{:dbgc}
+Requires: php{:dbg}-common = %{version}-%{release}
+Provides: php{:dbg}-cgi = %{version}-%{release}
+Conflicts: php{:dbgc}-cgi
 
-%description cgi{:dbg}
+%description cgi
 The php-cgi package contains the CGI interface.
 
-%package cli{:dbg}
+%package cli
 Group: Development/Languages
 Summary: Command-line interface for PHP
-Requires: php-common{:dbg} = %{version}-%{release}
-Provides: php-cli{:dbg} = %{version}-%{release}
-Conflicts: php-cli{:dbgc}
+Requires: php{:dbg}-common = %{version}-%{release}
+Provides: php{:dbg}-cli = %{version}-%{release}
+Conflicts: php{:dbgc}-cli
 
-%description cli{:dbg}
+%description cli
 The php-cli package contains the command-line interface.
 
-%package common{:dbg}
+%package common
 Group: Development/Languages
 Summary: Common files for PHP
 Requires: php{:dbg} = %{version}-%{release}
 Requires: libxml2 < 2.7.0, curl, openssl, expat
 Provides: php-api = %{apiver}, php-zend-api = %{zendver}
-Provides: php-ctype{:dbg}, php-curl{:dbg}, php-date{:dbg}
-Provides: php-ftp{:dbg}, php-hash{:dbg}, php-iconv{:dbg}, php-libxml{:dbg}
-Provides: php-openssl{:dbg}, php-pcre{:dbg}, php-mcrypt{:dbg}, php-pdo{:dbg}
-Provides: php-reflection{:dbg}, php-session{:dbg}, php-shmop{:dbg}, php-simplexml{:dbg}
-Provides: php-spl{:dbg}, php-sysvsem{:dbg}, php-sysvshm{:dbg}, php-sysvmsg{:dbg}, php-tokenizer{:dbg}
-Provides: php-zlib{:dbg}, php-json{:dbg}
-Obsoletes: php-openssl{:dbg}, php-curl{:dbg}, php-mhash{:dbg}
-Obsoletes: php-pecl-json, php-pecl-fileinfo
-Conflicts: php-common{:dbgc}
+Provides: php{:dbg}-ctype, php{:dbg}-curl, php{:dbg}-date
+Provides: php{:dbg}-ftp, php{:dbg}-hash, php{:dbg}-iconv, php{:dbg}-libxml
+Provides: php{:dbg}-openssl, php{:dbg}-pcre, php{:dbg}-mcrypt, php{:dbg}-pdo
+Provides: php{:dbg}-reflection, php{:dbg}-session, php{:dbg}-shmop, php{:dbg}-simplexml
+Provides: php{:dbg}-spl, php{:dbg}-sysvsem, php{:dbg}-sysvshm, php{:dbg}-sysvmsg, php{:dbg}-tokenizer
+Provides: php{:dbg}-zlib, php{:dbg}-json
+Obsoletes: php{:dbg}-openssl, php{:dbg}-curl, php{:dbg}-mhash
+Obsoletes: php{:dbg}-pecl-json, php-pecl-fileinfo
+Conflicts: php{:dbgc}-common
 
-%description common{:dbg}
-The php-common{:dbg} package contains files used by both the php
-package and the php-cli package.
+%description common
+The php{:dbg}-common package contains files used by both the php
+package and the php{:dbg}-cli package.
 
-%package devel{:dbg}
+%package devel
 Group: Development/Libraries
 Summary: Files needed for building PHP extensions
-Requires: php = %{version}-%{release}, autoconf213, automake
-Conflicts: devel{:dbgc}
+Requires: php{:dbg} = %{version}-%{release}, autoconf213, automake
+Conflicts: php{:dbgc}-devel
 
-%description devel{:dbg}
-The php-devel{:dbg} package contains the files needed for building PHP
+%description devel
+The php{:dbg}-devel package contains the files needed for building PHP
 extensions. If you need to compile your own PHP extensions, you will
 need to install this package.
 
-%package enchant{:dbg}
+%package enchant
 Group: Development/Languages
 Summary: A module for uniformity and conformity of various spelling libraries.
-Requires: php-common{:dbg} = %{version}-%{release}, enchant
+Requires: php{:dbg}-common = %{version}-%{release}, enchant
 BuildRequires: enchant-devel
-Conflicts: enchant{:dbgc}
+Conflicts: php{:dbgc}-enchant
 
-%description enchant{:dbg}
-php-enchant{:dbg} is the PHP binding for the Enchant library. Enchant steps in to 
+%description enchant
+php{:dbg}-enchant is the PHP binding for the Enchant library. Enchant steps in to 
 provide uniformity and conformity on top of all spelling libraries, 
 and implement certain features that may be lacking in any individual 
 provider library. Everything should "just work" for any and 
 every definition of "just working."
 
-%package imap{:dbg}
+%package imap
 Group: Development/Languages
 Summary: A module for PHP applications that use IMAP, NNTP or POP3.
-Requires: php-common{:dbg} = %{version}-%{release}, libc-client, openssl
+Requires: php{:dbg}-common = %{version}-%{release}, libc-client, openssl
 Obsoletes: mod_php3-imap, stronghold-php-imap
 BuildRequires: krb5-devel
 BuildRequires: openssl-devel
 BuildRequires: libc-client-devel
-Conflicts: imap
+Conflicts: php{:dbgc}-imap
 
-%description imap{:dbg}
-The php-imap{:dbg} package enables functions for the IMAP protocol, as well 
+%description imap
+The php{:dbg}-imap package enables functions for the IMAP protocol, as well 
 as NNTP, POP3 and local mailbox access methods.
 
-%package mysql{:dbg}
+%package mysql
 Summary: A module for PHP applications that use MySQL databases.
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
-Provides: php_database, php-mysqli{:dbg}
+Requires: php{:dbg}-common = %{version}-%{release}
+Provides: php_database, php{:dbg}-mysqli
 Obsoletes: mod_php3-mysql, stronghold-php-mysql
+Conflicts: php{:dbgc}-mysql
 
-%description mysql{:dbg}
-The php-mysql{:dbg} package contains a dynamic shared object that will add
+%description mysql
+The php{:dbg}-mysql package contains a dynamic shared object that will add
 MySQL database support to PHP. MySQL is an object-relational database
 management system. PHP is an HTML-embeddable scripting language. If
 you need MySQL support for PHP applications, you will need to install
 this package and the php package.
 
-%package tidy{:dbg}
+%package tidy
 Group: Development/Languages
 Summary: A module for cleaning and repairing HTML documents.
-Requires: php-common{:dbg} = %{version}-%{release}, libtidy
+Requires: php{:dbg}-common = %{version}-%{release}, libtidy
 BuildRequires: libtidy-devel
-Conflicts: tidy{:dbgc}
+Conflicts: php{:dbgc}-tidy
 
-%description tidy{:dbg}
-php-tidy{:dbg} is a binding for the Tidy HTML clean and repair utility which 
+%description tidy
+php{:dbg}-tidy is a binding for the Tidy HTML clean and repair utility which 
 allows you to not only clean and otherwise manipulate HTML documents, 
 but also traverse the document tree.
 
-%package ldap{:dbg}
+%package ldap
 Summary: A module for PHP applications that use LDAP.
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, openldap
+Requires: php{:dbg}-common = %{version}-%{release}, openldap
 Obsoletes: mod_php3-ldap, stronghold-php-ldap
 BuildRequires: cyrus-sasl-devel, openldap-devel, openssl-devel
-Conflicts: ldap{:dbgc}
+Conflicts: php{:dbgc}-ldap
 
-%description ldap{:dbg}
-The php-ldap{:dbg} package is a dynamic shared object (DSO) for the Apache
+%description ldap
+The php{:dbg}-ldap package is a dynamic shared object (DSO) for the Apache
 Web server that adds Lightweight Directory Access Protocol (LDAP)
 support to PHP. LDAP is a set of protocols for accessing directory
 services over the Internet. PHP is an HTML-embedded scripting
 language. If you need LDAP support for PHP applications, you will
 need to install this package in addition to the php package.
 
-%package oci8{:dbg}
+%package oci8
 Summary: An Oracle database module for PHP.
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, php-pdo{:dbg}, oracle-instantclient11.1-basic
+Requires: php{:dbg}-common = %{version}-%{release}, php{:dbg}-pdo, oracle-instantclient11.1-basic
 Provides: php_database
 BuildRequires: krb5-devel, openssl-devel, oracle-instantclient11.1-devel
-Conflicts: oci8{:dbgc}
+Conflicts: php{:dbgc}-oci8
 
-%description oci8{:dbg}
-The php-oci8{:dbg} package includes a dynamic shared object (DSO) that can
+%description oci8
+The php{:dbg}-oci8 package includes a dynamic shared object (DSO) that can
 be compiled in to the Apache Web server to add Oracle database
 support to PHP. If you need back-end support for Oracle, you should 
 install this package in addition to the main php package.
 
-%package pgsql{:dbg}
+%package pgsql
 Summary: A PostgreSQL database module for PHP.
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, php-pdo{:dbg}, postgresql
+Requires: php{:dbg}-common = %{version}-%{release}, php{:dbg}-pdo, postgresql
 Provides: php_database
 Obsoletes: mod_php3-pgsql, stronghold-php-pgsql
 BuildRequires: krb5-devel, openssl-devel, postgresql-devel
-Conflicts: pgsql{:dbgc}
+Conflicts: php{:dbgc}-pgsql
 
-%description pgsql{:dbg}
-The php-pgsql{:dbg} package includes a dynamic shared object (DSO) that can
+%description pgsql
+The php{:dbg}-pgsql package includes a dynamic shared object (DSO) that can
 be compiled in to the Apache Web server to add PostgreSQL database
 support to PHP. PostgreSQL is an object-relational database management
 system that supports almost all SQL constructs. PHP is an
@@ -193,17 +194,17 @@ HTML-embedded scripting language. If you need back-end support for
 PostgreSQL, you should install this package in addition to the main
 php package.
 
-%package odbc{:dbg}
+%package odbc
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, php-pdo{:dbg}, unixODBC
+Requires: php{:dbg}-common = %{version}-%{release}, php{:dbg}-pdo, unixODBC
 Summary: A module for PHP applications that use ODBC databases.
 Provides: php_database
 Obsoletes: stronghold-php-odbc
 BuildRequires: unixODBC-devel
-Conflicts: odbc{:dbgc}
+Conflicts: php{:dbgc}-odbc
 
-%description odbc{:dbg}
-The php-odbc{:dbg} package contains a dynamic shared object that will add
+%description odbc
+The php{:dbg}-odbc package contains a dynamic shared object that will add
 database support through ODBC to PHP. ODBC is an open specification
 which provides a consistent API for developers to use for accessing
 data sources (which are often, but not always, databases). PHP is an
@@ -211,210 +212,226 @@ HTML-embeddable scripting language. If you need ODBC support for PHP
 applications, you will need to install this package and the php
 package.
 
-%package mssql{:dbg}
+%package mssql
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, php-pdo{:dbg}, freetds
+Requires: php{:dbg}-common = %{version}-%{release}, php{:dbg}-pdo, freetds
 Summary: A module for PHP applications that use MS SQL databases.
 Provides: php_database
 BuildRequires: freetds-devel
-Conflicts: mssql{:dbgc}
+Conflicts: php{:dbgc}-mssql
 
-%description mssql{:dbg}
-The php-mssql{:dbg} package contains a dynamic shared object that will add
+%description mssql
+The php{:dbg}-mssql package contains a dynamic shared object that will add
 database support for MS SQL to PHP. 
 
-%package snmp{:dbg}
+%package snmp
 Summary: A module for PHP applications that query SNMP-managed devices.
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, net-snmp
+Requires: php{:dbg}-common = %{version}-%{release}, net-snmp
 BuildRequires: net-snmp-devel
-Conflicts: snmp{:dbgc}
+Conflicts: php{:dbg}-snmp
 
-%description snmp{:dbg}
-The php-snmp{:dbg} package contains a dynamic shared object that will add
+%description snmp
+The php{:dbg}-snmp package contains a dynamic shared object that will add
 support for querying SNMP devices to PHP.  PHP is an HTML-embeddable
 scripting language. If you need SNMP support for PHP applications, you
 will need to install this package and the php package.
 
-%package dba{:dbg}
+%package dba
 Summary: A database abstraction layer module for PHP applications
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
-Conflicts: dba{:dbgc}
+Requires: php{:dbg}-common = %{version}-%{release}
+Conflicts: php{:dbgc}-dba
 
-%description dba{:dbg}
-The php-dba{:dbg} package contains a dynamic shared object that will add
+%description dba
+The php{:dbg}-dba package contains a dynamic shared object that will add
 support for using the DBA database abstraction layer to PHP.
 
-%package readline{:dbg}
+%package readline
 Summary: A module for PHP applications for using the GNU Readline library
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, readline
+Requires: php{:dbg}-common = %{version}-%{release}, readline
 BuildRequires: readline-devel
-Conflicts: readline{:dbgc}
+Conflicts: php{:dbgc}-readline
 
-%description readline{:dbg}
-The php-readline{:dbg} package contains functions that provide editable command 
+%description readline
+The php{:dbg}-readline package contains functions that provide editable command 
 lines. An example being the way Bash allows you to use the arrow keys to 
 insert characters or scroll through command history.
 
-%package soap{:dbg}
+%package soap
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
 Summary: A module for PHP applications that use the SOAP protocol
 BuildRequires: libxml2-devel
+Conflicts: php{:dbgc}-soap
 
-%description soap{:dbg}
-The php-soap{:dbg} package contains a dynamic shared object that will add
+%description soap
+The php{:dbg}-soap package contains a dynamic shared object that will add
 support to PHP for using the SOAP web services protocol.
 
-%package xmlrpc{:dbg}
+%package xmlrpc
 Summary: A module for PHP applications which use the XML-RPC protocol
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
 BuildRequires: expat-devel
+Conflicts: php{:dbgc}-xmlrpc
 
-%description xmlrpc{:dbg}
-The php-xmlrpc{:dbg} package contains a dynamic shared object that will add
+%description xmlrpc
+The php{:dbg}-xmlrpc package contains a dynamic shared object that will add
 support for the XML-RPC protocol to PHP.
 
-%package mbstring{:dbg}
+%package mbstring
 Summary: A module for PHP applications which need multi-byte string handling
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
+Conflicts: php{:dbgc}-mbstring
 
-%description mbstring{:dbg}
-The php-mbstring{:dbg} package contains a dynamic shared object that will add
+%description mbstring
+The php{:dbg}-mbstring package contains a dynamic shared object that will add
 support for multi-byte string handling to PHP.
 
-%package gd{:dbg}
+%package gd
 Summary: A module for PHP applications for using the gd graphics library
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
 BuildRequires: freetype-devel, t1lib-devel, libjpeg-devel, libpng-devel, libXpm-devel
+Conflicts: php{:dbgc}-gd
 
-%description gd{:dbg}
-The php-gd{:dbg} package contains a dynamic shared object that will add
+%description gd
+The php{:dbg}-gd package contains a dynamic shared object that will add
 support for using the gd graphics library to PHP.
 
-%package bcmath{:dbg}
+%package bcmath
 Summary: A module for PHP applications for using the bcmath library
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
+Conflicts: php{:dbgc}-bcmath
 
-%description bcmath{:dbg}
-The php-bcmath{:dbg} package contains a dynamic shared object that will add
+%description bcmath
+The php{:dbg}-bcmath package contains a dynamic shared object that will add
 support for using the bcmath library to PHP.
 
-%package mcrypt{:dbg}
+%package mcrypt
 Summary: A module for PHP applications for using the mcrypt library
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, libmcrypt
+Requires: php{:dbg}-common = %{version}-%{release}, libmcrypt
 BuildRequires: libmcrypt-devel
+Conflicts: php{:dbgc}-mcrypt
 
-%description mcrypt{:dbg}
-The php-mcrypt{:dbg} package contains a dynamic shared object that will add
+%description mcrypt
+The php{:dbg}-mcrypt package contains a dynamic shared object that will add
 support for using the mcrypt library to PHP.
 
-%package exif{:dbg}
+%package exif
 Summary: A module for PHP applications for using the EXIF functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
+Conflicts: php{:dbgc}-exif
 
-%description exif{:dbg}
-The php-exif{:dbg} package contains a dynamic shared object that will add
+%description exif
+The php{:dbg}-exif package contains a dynamic shared object that will add
 support for using the EXIF functions to PHP.
 
-%package bz2{:dbg}
+%package bz2
 Summary: A module for PHP applications for using the bzip2 functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, bzip2
+Requires: php{:dbg}-common = %{version}-%{release}, bzip2
 BuildRequires: bzip2-devel
+Conflicts: php{:dbgc}-bz2
 
-%description bz2{:dbg}
-The php-bz2{:dbg} package contains a dynamic shared object that will add
+%description bz2
+The php{:dbg}-bz2 package contains a dynamic shared object that will add
 support for using the bzip2 functions to PHP.
 
-%package gmp{:dbg}
+%package gmp
 Summary: A module for PHP applications for using the gmp functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, gmp
+Requires: php{:dbg}-common = %{version}-%{release}, gmp
 BuildRequires: gmp-devel
+Conflicts: php{:dbgc}-gmp
 
-%description gmp{:dbg}
-The php-gmp{:dbg} package contains a dynamic shared object that will add
+%description gmp
+The php{:dbg}-gmp package contains a dynamic shared object that will add
 support for using the gmp functions to PHP.
 
-%package wddx{:dbg}
+%package wddx
 Summary: A module for PHP applications for using the WDDX functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
 BuildRequires: expat-devel
+Conflicts: php{:dbgc}-wddx
 
-%description wddx{:dbg}
-The php-wddx{:dbg} package contains a dynamic shared object that will add
+%description wddx
+The php{:dbg}-wddx package contains a dynamic shared object that will add
 support for using the WDDX functions to PHP.
 
-%package calendar{:dbg}
+%package calendar
 Summary: A module for PHP applications for using the calendar functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
+Conflicts: php{:dbgc}-calendar
 
-%description calendar{:dbg}
-The php-calendar{:dbg} package contains a dynamic shared object that will add
+%description calendar
+The php{:dbg}-calendar package contains a dynamic shared object that will add
 support for using the calendar functions to PHP.
 
-%package gettext{:dbg}
+%package gettext
 Summary: A module for PHP applications for using the gettext functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, gettext
+Requires: php{:dbg}-common = %{version}-%{release}, gettext
 BuildRequires: gettext-devel
+Conflicts: php{:dbgc}-gettext
 
-%description gettext{:dbg}
-The php-gettext{:dbg} package contains a dynamic shared object that will add
+%description gettext
+The php{:dbg}-gettext package contains a dynamic shared object that will add
 support for using the gettext functions to PHP.
 
-%package xsl{:dbg}
+%package xsl
 Summary: A module for PHP applications for using the xsl functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, libxslt, libxml2
+Requires: php{:dbg}-common = %{version}-%{release}, libxslt, libxml2
 BuildRequires: libxslt-devel libxml2-devel
+Conflicts: php{:dbgc}-xsl
 
-%description xsl{:dbg}
-The php-xsl{:dbg} package contains a dynamic shared object that will add
+%description xsl
+The php{:dbg}-xsl package contains a dynamic shared object that will add
 support for using the xsl functions to PHP.
 
-%package zip{:dbg}
+%package zip
 Summary: A module for PHP applications for using the Zip functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, zlib
+Requires: php{:dbg}-common = %{version}-%{release}, zlib
 BuildRequires: zlib-devel
+Conflicts: php{:dbgc}-zip
 
-%description zip{:dbg}
-The php-zip{:dbg} package contains a dynamic shared object that will add
+%description zip
+The php{:dbg}-zip package contains a dynamic shared object that will add
 support for using the zip functions to PHP.
 
-%package intl{:dbg}
+%package intl
 Summary: A module for PHP applications for using the intl functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}, libicu
+Requires: php{:dbg}-common = %{version}-%{release}, libicu
 BuildRequires: libicu-devel
+Conflicts: php{:dbgc}-intl
 
-%description intl{:dbg}
-The php-intl{:dbg} package contains a dynamic shared object that will add
+%description intl
+The php{:dbg}-intl package contains a dynamic shared object that will add
 support for using the intl functions to PHP.
 
-%package pcntl{:dbg}
+%package pcntl
 Summary: A module for PHP applications for using the proccess control functions
 Group: Development/Languages
-Requires: php-common{:dbg} = %{version}-%{release}
+Requires: php{:dbg}-common = %{version}-%{release}
+Conflicts: php{:dbgc}-pcntl
 
-%description pcntl{:dbg}
-The php-pcntl{:dbg} package contains a dynamic shared object that will add
+%description pcntl
+The php{:dbg}-pcntl package contains a dynamic shared object that will add
 support for using the process control functions to PHP.
 
 %prep
-%setup -q
+%setup -q php-%{version}
 
 
 %{__cat} <<'EOF' >logrotate.d.php
@@ -801,7 +818,7 @@ popd
 %config %{_sysconfdir}/httpd/conf.d/php.conf
 %{contentdir}/icons/php.gif
 
-%files common{:dbg}
+%files common
 %defattr(-,root,root)
 %doc CODING_STANDARDS CREDITS EXTENSIONS INSTALL LICENSE NEWS README*
 %doc Zend/ZEND_* gd_README TSRM_LICENSE
@@ -811,7 +828,7 @@ popd
 %dir %{_localstatedir}/lib/php
 %dir %{_libdir}/php
 
-%files cli{:dbg}
+%files cli
 %defattr(-,root,root)
 %config %{_sysconfdir}/pear.conf
 %config %{_sysconfdir}/php.cli.d/php.ini
@@ -842,14 +859,14 @@ popd
 %{_mandir}/man1/php.1*
 
 
-%files cgi{:dbg}
+%files cgi
 %defattr(-,root,root)
 %{_bindir}/php-cgi
 %config %{_sysconfdir}/php.cgi.d/php.ini
 %config %{_sysconfdir}/php.cgi.d/php-dev.ini
 %dir %{_sysconfdir}/php.cgi.d
 
-%files devel{:dbg}
+%files devel
 %defattr(-,root,root)
 %{_bindir}/php-config
 %{_bindir}/phpize
@@ -859,33 +876,33 @@ popd
 %{_mandir}/man1/phpize.1*
 
 
-%files enchant{:dbg}
+%files enchant
 %attr(755,root,root) %{_libdir}/{:extsubdir}/enchant.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/enchant.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/enchant.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/enchant.ini
 
-%files imap{:dbg}
+%files imap
 %attr(755,root,root) %{_libdir}/{:extsubdir}/imap.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/imap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/imap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/imap.ini
 
-%files oci8{:dbg}
+%files oci8
 %attr(755,root,root) %{_libdir}/{:extsubdir}/oci8.so
 %attr(755,root,root) %{_libdir}/{:extsubdir}/pdo_oci.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/oci8.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/oci8.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/oci8.ini
 
-%files pgsql{:dbg}
+%files pgsql
 %attr(755,root,root) %{_libdir}/{:extsubdir}/pgsql.so
 %attr(755,root,root) %{_libdir}/{:extsubdir}/pdo_pgsql.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/pgsql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/pgsql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/pgsql.ini
 
-%files mysql{:dbg}
+%files mysql
 %attr(755,root,root) %{_libdir}/{:extsubdir}/mysql.so
 %attr(755,root,root) %{_libdir}/{:extsubdir}/mysqli.so
 %attr(755,root,root) %{_libdir}/{:extsubdir}/pdo_mysql.so
@@ -893,148 +910,147 @@ popd
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/mysql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/mysql.ini
 
-%files odbc{:dbg}
+%files odbc
 %attr(755,root,root) %{_libdir}/{:extsubdir}/odbc.so
 %attr(755,root,root) %{_libdir}/{:extsubdir}/pdo_odbc.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/odbc.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/odbc.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/odbc.ini
 
-%files tidy{:dbg}
+%files tidy
 %attr(755,root,root) %{_libdir}/{:extsubdir}/tidy.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/tidy.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/tidy.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/tidy.ini
 
-%files mssql{:dbg}
+%files mssql
 %attr(755,root,root) %{_libdir}/{:extsubdir}/mssql.so
 %attr(755,root,root) %{_libdir}/{:extsubdir}/pdo_dblib.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/mssql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/mssql.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/mssql.ini
 
-%files readline{:dbg}
+%files readline
 %attr(755,root,root) %{_libdir}/{:extsubdir}/readline.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/readline.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/readline.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/readline.ini
 
-%files ldap{:dbg}
+%files ldap
 %attr(755,root,root) %{_libdir}/{:extsubdir}/ldap.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/ldap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/ldap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/ldap.ini
 
-%files snmp{:dbg}
+%files snmp
 %attr(755,root,root) %{_libdir}/{:extsubdir}/snmp.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/snmp.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/snmp.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/snmp.ini
 
-%files dba{:dbg}
+%files dba
 %attr(755,root,root) %{_libdir}/{:extsubdir}/dba.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/dba.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/dba.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/dba.ini
 
-%files soap{:dbg}
+%files soap
 %attr(755,root,root) %{_libdir}/{:extsubdir}/soap.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/soap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/soap.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/soap.ini
 
-%files xmlrpc{:dbg}
+%files xmlrpc
 %attr(755,root,root) %{_libdir}/{:extsubdir}/xmlrpc.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/xmlrpc.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/xmlrpc.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/xmlrpc.ini
 
-%files mbstring{:dbg}
+%files mbstring
 %attr(755,root,root) %{_libdir}/{:extsubdir}/mbstring.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/mbstring.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/mbstring.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/mbstring.ini
 
-%files gd{:dbg}
+%files gd
 %attr(755,root,root) %{_libdir}/{:extsubdir}/gd.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/gd.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/gd.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/gd.ini
 
-%files bcmath{:dbg}
+%files bcmath
 %attr(755,root,root) %{_libdir}/{:extsubdir}/bcmath.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/bcmath.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/bcmath.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/bcmath.ini
 
-%files mcrypt{:dbg}
+%files mcrypt
 %attr(755,root,root) %{_libdir}/{:extsubdir}/mcrypt.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/mcrypt.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/mcrypt.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/mcrypt.ini
 
-%files exif{:dbg}
+%files exif
 %attr(755,root,root) %{_libdir}/{:extsubdir}/exif.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/exif.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/exif.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/exif.ini
 
-%files bz2{:dbg}
+%files bz2
 %attr(755,root,root) %{_libdir}/{:extsubdir}/bz2.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/bz2.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/bz2.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/bz2.ini
 
-%files gmp{:dbg}
+%files gmp
 %attr(755,root,root) %{_libdir}/{:extsubdir}/gmp.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/gmp.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/gmp.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/gmp.ini
 
-%files wddx{:dbg}
+%files wddx
 %attr(755,root,root) %{_libdir}/{:extsubdir}/wddx.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/wddx.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/wddx.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/wddx.ini
 
-%files calendar{:dbg}
+%files calendar
 %attr(755,root,root) %{_libdir}/{:extsubdir}/calendar.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/calendar.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/calendar.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/calendar.ini
 
-%files gettext{:dbg}
+%files gettext
 %attr(755,root,root) %{_libdir}/{:extsubdir}/gettext.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/gettext.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/gettext.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/gettext.ini
 
-%files xsl{:dbg}
+%files xsl
 %attr(755,root,root) %{_libdir}/{:extsubdir}/xsl.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/xsl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/xsl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/xsl.ini
 
-%files zip{:dbg}
+%files zip
 %attr(755,root,root) %{_libdir}/{:extsubdir}/zip.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/zip.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/zip.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/zip.ini
 
-%files intl{:dbg}
+%files intl
 %attr(755,root,root) %{_libdir}/{:extsubdir}/intl.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/intl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/intl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/intl.ini
 
-%files pcntl{:dbg}
+%files pcntl
 %attr(755,root,root) %{_libdir}/{:extsubdir}/pcntl.so
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cli.d/extensions/pcntl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.cgi.d/extensions/pcntl.ini
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/pcntl.ini
 
 %changelog
-
 * Tue Jul  7 2009 Clay Loveless <clay@killersoft.com> 5.3.0-2, 5.3.0-3
 - Fixed paths for extension inclusion
 - Fixed builds for cli, cgi, mod_php so that mysqlnd is enabled inside each.
