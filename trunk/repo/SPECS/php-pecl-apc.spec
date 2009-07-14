@@ -1,6 +1,7 @@
 # $Id$
 %define php_extdir %(php-config --extension-dir 2>/dev/null || echo %{_libdir}/php4)
 %define php_config_opts %(php-config --configuration-options 2>/dev/null)
+%define _dbg %{nil}
 %define peclname %{lua:
 
 name = "php-pecl-apc"
