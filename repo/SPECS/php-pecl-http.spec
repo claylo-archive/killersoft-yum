@@ -2,6 +2,7 @@
 # yum install -y libssh2-devel openssl-devel libidn-devel openldap-devel c-ares-devel gnutls-devel curl-devel php-devel
 %define php_extdir %(php-config --extension-dir 2>/dev/null || echo %{_libdir}/php4)
 %define php_config_opts %(php-config --configuration-options 2>/dev/null)
+%define _dbg %{nil}
 %define peclname %{lua:
 
 name = "php-pecl-http"
