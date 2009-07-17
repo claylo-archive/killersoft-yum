@@ -13,86 +13,115 @@ Killersoft takes no responsibility for any chaos or mayhem users may cause by us
 = Packages Provided =
 
 || *Package* || *Version* ||
-|| c-ares-devel.i386 || 1.6.0-1||
-|| curl-devel.i386 || 7.19.5-2||
-|| freetype-devel.i386 || 2.3.9-1||
-|| gettext-devel.i386 || 0.17-4||
-|| gettext-libs.i386 || 0.17-4||
-|| js.i386 || 1.70-4.ks||
-|| js-devel.i386 || 1.70-4.ks||
-|| libc-client-devel.i386 || 2007e-2||
-|| libevent-devel.i386 || 1.4.11-1||
-|| libmemcached-devel.i386 || 0.30-1||
-|| libpng-devel.i386 || 2:1.2.37-1||
-|| libssh2-devel.i386 || 1.1-1||
-|| libxml2-devel.i386 || 2.6.32-1||
-|| libxslt-devel.i386 || 1.1.23-1||
-|| memcached-devel.i386 || 1.4.0-rc1.2||
-|| oracle-instantclient11.1-basic.i386 || 11.1.0.7.0-1||
-|| oracle-instantclient11.1-devel.i386 || 11.1.0.7.0-1||
-|| php-bcmath.i386 || 5.3.0-3||
-|| php-calendar.i386 || 5.3.0-3||
-|| php-cgi.i386 || 5.3.0-3||
-|| php-dba.i386 || 5.3.0-3||
-|| php-dbg.i386 || 5.3.0-3||
-|| php-dbg-bcmath.i386 || 5.3.0-3||
-|| php-dbg-bz2.i386 || 5.3.0-3||
-|| php-dbg-calendar.i386 || 5.3.0-3||
-|| php-dbg-cgi.i386 || 5.3.0-3||
-|| php-dbg-cli.i386 || 5.3.0-3||
-|| php-dbg-common.i386 || 5.3.0-3||
-|| php-dbg-dba.i386 || 5.3.0-3||
-|| php-dbg-devel.i386 || 5.3.0-3||
-|| php-dbg-enchant.i386 || 5.3.0-3||
-|| php-dbg-exif.i386 || 5.3.0-3||
-|| php-dbg-gd.i386 || 5.3.0-3||
-|| php-dbg-gettext.i386 || 5.3.0-3||
-|| php-dbg-gmp.i386 || 5.3.0-3||
-|| php-dbg-imap.i386 || 5.3.0-3||
-|| php-dbg-intl.i386 || 5.3.0-3||
-|| php-dbg-ldap.i386 || 5.3.0-3||
-|| php-dbg-mbstring.i386 || 5.3.0-3||
-|| php-dbg-mcrypt.i386 || 5.3.0-3||
-|| php-dbg-mssql.i386 || 5.3.0-3||
-|| php-dbg-mysql.i386 || 5.3.0-3||
-|| php-dbg-oci8.i386 || 5.3.0-3||
-|| php-dbg-odbc.i386 || 5.3.0-3||
-|| php-dbg-pcntl.i386 || 5.3.0-3||
-|| php-dbg-pecl-spidermonkey.i386 || 0.1.2-1||
-|| php-dbg-pgsql.i386 || 5.3.0-3||
-|| php-dbg-readline.i386 || 5.3.0-3||
-|| php-dbg-snmp.i386 || 5.3.0-3||
-|| php-dbg-soap.i386 || 5.3.0-3||
-|| php-dbg-tidy.i386 || 5.3.0-3||
-|| php-dbg-wddx.i386 || 5.3.0-3||
-|| php-dbg-xmlrpc.i386 || 5.3.0-3||
-|| php-dbg-xsl.i386 || 5.3.0-3||
-|| php-dbg-zip.i386 || 5.3.0-3||
-|| php-devel.i386 || 5.3.0-3||
-|| php-enchant.i386 || 5.3.0-3||
-|| php-exif.i386 || 5.3.0-3||
-|| php-gd.i386 || 5.3.0-3||
-|| php-gettext.i386 || 5.3.0-3||
-|| php-gmp.i386 || 5.3.0-3||
-|| php-mbstring.i386 || 5.3.0-3||
-|| php-mssql.i386 || 5.3.0-3||
-|| php-mysql.i386 || 5.3.0-3||
-|| php-oci8.i386 || 5.3.0-3||
-|| php-odbc.i386 || 5.3.0-3||
-|| php-pcntl.i386 || 5.3.0-3||
-|| php-pecl-geoip.i386 || 1.0.7-1||
-|| php-pecl-markdown.i386 || 0.1.0-1||
-|| php-pecl-spidermonkey.i386 || 0.1.2-1||
-|| php-pecl-syck.i386 || 0.9.3-1||
-|| php-pecl-uploadprogress.i386 || 1.0.1-1||
-|| php-pgsql.i386 || 5.3.0-3||
-|| php-readline.i386 || 5.3.0-3||
-|| php-snmp.i386 || 5.3.0-3||
-|| php-soap.i386 || 5.3.0-3||
-|| php-tidy.i386 || 5.3.0-3||
-|| php-wddx.i386 || 5.3.0-3||
-|| php-xmlrpc.i386 || 5.3.0-3||
-|| php-xsl.i386 || 5.3.0-3||
-|| php-zip.i386 || 5.3.0-3||
+|| c-ares || 1.6.0-1 ||
+|| c-ares-devel || 1.6.0-1 ||
+|| curl || 7.19.5-2 ||
+|| curl-devel || 7.19.5-2 ||
+|| freetype || 2.3.9-1 ||
+|| freetype-devel || 2.3.9-1 ||
+|| gettext || 0.17-4 ||
+|| gettext-devel || 0.17-4 ||
+|| gettext-libs || 0.17-4 ||
+|| gnupg || 1.4.9-1 ||
+|| js || 1.70-4.ks ||
+|| js-devel || 1.70-4.ks ||
+|| libc-client || 2007e-2 ||
+|| libc-client-devel || 2007e-2 ||
+|| libevent || 1.4.11-1 ||
+|| libevent-devel || 1.4.11-1 ||
+|| libmemcached || 0.30-1 ||
+|| libmemcached-devel || 0.30-1 ||
+|| libpng || 1.2.37-1 ||
+|| libpng-devel || 1.2.37-1 ||
+|| libssh2 || 1.1-1 ||
+|| libssh2-devel || 1.1-1 ||
+|| libxml2 || 2.6.32-1 ||
+|| libxml2-devel || 2.6.32-1 ||
+|| libxml2-python || 2.6.32-1 ||
+|| libxslt || 1.1.23-1 ||
+|| libxslt-devel || 1.1.23-1 ||
+|| libxslt-python || 1.1.23-1 ||
+|| memcached || 1.4.0-rc1.2 ||
+|| memcached-devel || 1.4.0-rc1.2 ||
+|| nfs-utils || 1.0.9-50 ||
+|| oracle-instantclient11.1-basic || 11.1.0.7.0-1 ||
+|| oracle-instantclient11.1-devel || 11.1.0.7.0-1 ||
+|| php || 5.3.0-3 ||
+|| php-bcmath || 5.3.0-3 ||
+|| php-bz2 || 5.3.0-3 ||
+|| php-calendar || 5.3.0-3 ||
+|| php-cgi || 5.3.0-3 ||
+|| php-cli || 5.3.0-3 ||
+|| php-common || 5.3.0-3 ||
+|| php-dba || 5.3.0-3 ||
+|| php-dbg || 5.3.0-3 ||
+|| php-dbg-bcmath || 5.3.0-3 ||
+|| php-dbg-bz2 || 5.3.0-3 ||
+|| php-dbg-calendar || 5.3.0-3 ||
+|| php-dbg-cgi || 5.3.0-3 ||
+|| php-dbg-cli || 5.3.0-3 ||
+|| php-dbg-common || 5.3.0-3 ||
+|| php-dbg-dba || 5.3.0-3 ||
+|| php-dbg-devel || 5.3.0-3 ||
+|| php-dbg-enchant || 5.3.0-3 ||
+|| php-dbg-exif || 5.3.0-3 ||
+|| php-dbg-gd || 5.3.0-3 ||
+|| php-dbg-gettext || 5.3.0-3 ||
+|| php-dbg-gmp || 5.3.0-3 ||
+|| php-dbg-imap || 5.3.0-3 ||
+|| php-dbg-intl || 5.3.0-3 ||
+|| php-dbg-ldap || 5.3.0-3 ||
+|| php-dbg-mbstring || 5.3.0-3 ||
+|| php-dbg-mcrypt || 5.3.0-3 ||
+|| php-dbg-mssql || 5.3.0-3 ||
+|| php-dbg-mysql || 5.3.0-3 ||
+|| php-dbg-oci8 || 5.3.0-3 ||
+|| php-dbg-odbc || 5.3.0-3 ||
+|| php-dbg-pcntl || 5.3.0-3 ||
+|| php-dbg-pecl-spidermonkey || 0.1.2-1 ||
+|| php-dbg-pgsql || 5.3.0-3 ||
+|| php-dbg-readline || 5.3.0-3 ||
+|| php-dbg-snmp || 5.3.0-3 ||
+|| php-dbg-soap || 5.3.0-3 ||
+|| php-dbg-tidy || 5.3.0-3 ||
+|| php-dbg-wddx || 5.3.0-3 ||
+|| php-dbg-xmlrpc || 5.3.0-3 ||
+|| php-dbg-xsl || 5.3.0-3 ||
+|| php-dbg-zip || 5.3.0-3 ||
+|| php-devel || 5.3.0-3 ||
+|| php-enchant || 5.3.0-3 ||
+|| php-exif || 5.3.0-3 ||
+|| php-gd || 5.3.0-3 ||
+|| php-gettext || 5.3.0-3 ||
+|| php-gmp || 5.3.0-3 ||
+|| php-imap || 5.3.0-3 ||
+|| php-intl || 5.3.0-3 ||
+|| php-ldap || 5.3.0-3 ||
+|| php-mbstring || 5.3.0-3 ||
+|| php-mcrypt || 5.3.0-3 ||
+|| php-mssql || 5.3.0-3 ||
+|| php-mysql || 5.3.0-3 ||
+|| php-oci8 || 5.3.0-3 ||
+|| php-odbc || 5.3.0-3 ||
+|| php-pcntl || 5.3.0-3 ||
+|| php-pecl-apc || 3.1.2-1 ||
+|| php-pecl-geoip || 1.0.7-1 ||
+|| php-pecl-http || 1.6.3-3 ||
+|| php-pecl-markdown || 0.1.0-1 ||
+|| php-pecl-memcached || 1.0.0-1 ||
+|| php-pecl-oauth || 0.99.9-1 ||
+|| php-pecl-spidermonkey || 0.1.2-1 ||
+|| php-pecl-syck || 0.9.3-1 ||
+|| php-pecl-uploadprogress || 1.0.1-1 ||
+|| php-pecl-xdebug || 2.0.5-1 ||
+|| php-pgsql || 5.3.0-3 ||
+|| php-readline || 5.3.0-3 ||
+|| php-snmp || 5.3.0-3 ||
+|| php-soap || 5.3.0-3 ||
+|| php-tidy || 5.3.0-3 ||
+|| php-wddx || 5.3.0-3 ||
+|| php-xmlrpc || 5.3.0-3 ||
+|| php-xsl || 5.3.0-3 ||
+|| php-zip || 5.3.0-3 ||
 
 Interested in something you don't see here yet that would help PHP developers? Please make a request by opening a ticket.
