@@ -1,0 +1,97 @@
+#summary Packages Available
+
+= Introduction =
+
+The goal of the Killersoft Yum repository is to provide very current packages for PHP development on CentOS5/RHEL5. While we believe most, if not all, packages posted to be suitable for production use, mileage may vary on some PECL packages. 
+
+The point *is not* to provide a bulletproof system. The point is to make it easy for users to mix and match packages without having to worry about compiling and dependency resolution to figure out what works best for their needs as quickly as possible. 
+
+Killersoft takes no responsibility for any chaos or mayhem users may cause by using these packages. We think they're safe, we use them in production, but if you don't know what you're doing and aren't comfortable with cutting-edge releases, you should probably stick with your current Linux distributions' release schedule.
+
+
+= Packages Provided =
+
+|| *Package* || *Version* ||
+|| c-ares-devel.i386 || 1.6.0-1||
+|| curl-devel.i386 || 7.19.5-2||
+|| freetype-devel.i386 || 2.3.9-1||
+|| gettext-devel.i386 || 0.17-4||
+|| gettext-libs.i386 || 0.17-4||
+|| js.i386 || 1.70-4.ks||
+|| js-devel.i386 || 1.70-4.ks||
+|| libc-client-devel.i386 || 2007e-2||
+|| libevent-devel.i386 || 1.4.11-1||
+|| libmemcached-devel.i386 || 0.30-1||
+|| libpng-devel.i386 || 2:1.2.37-1||
+|| libssh2-devel.i386 || 1.1-1||
+|| libxml2-devel.i386 || 2.6.32-1||
+|| libxslt-devel.i386 || 1.1.23-1||
+|| memcached-devel.i386 || 1.4.0-rc1.2||
+|| oracle-instantclient11.1-basic.i386 || 11.1.0.7.0-1||
+|| oracle-instantclient11.1-devel.i386 || 11.1.0.7.0-1||
+|| php-bcmath.i386 || 5.3.0-3||
+|| php-calendar.i386 || 5.3.0-3||
+|| php-cgi.i386 || 5.3.0-3||
+|| php-dba.i386 || 5.3.0-3||
+|| php-dbg.i386 || 5.3.0-3||
+|| php-dbg-bcmath.i386 || 5.3.0-3||
+|| php-dbg-bz2.i386 || 5.3.0-3||
+|| php-dbg-calendar.i386 || 5.3.0-3||
+|| php-dbg-cgi.i386 || 5.3.0-3||
+|| php-dbg-cli.i386 || 5.3.0-3||
+|| php-dbg-common.i386 || 5.3.0-3||
+|| php-dbg-dba.i386 || 5.3.0-3||
+|| php-dbg-devel.i386 || 5.3.0-3||
+|| php-dbg-enchant.i386 || 5.3.0-3||
+|| php-dbg-exif.i386 || 5.3.0-3||
+|| php-dbg-gd.i386 || 5.3.0-3||
+|| php-dbg-gettext.i386 || 5.3.0-3||
+|| php-dbg-gmp.i386 || 5.3.0-3||
+|| php-dbg-imap.i386 || 5.3.0-3||
+|| php-dbg-intl.i386 || 5.3.0-3||
+|| php-dbg-ldap.i386 || 5.3.0-3||
+|| php-dbg-mbstring.i386 || 5.3.0-3||
+|| php-dbg-mcrypt.i386 || 5.3.0-3||
+|| php-dbg-mssql.i386 || 5.3.0-3||
+|| php-dbg-mysql.i386 || 5.3.0-3||
+|| php-dbg-oci8.i386 || 5.3.0-3||
+|| php-dbg-odbc.i386 || 5.3.0-3||
+|| php-dbg-pcntl.i386 || 5.3.0-3||
+|| php-dbg-pecl-spidermonkey.i386 || 0.1.2-1||
+|| php-dbg-pgsql.i386 || 5.3.0-3||
+|| php-dbg-readline.i386 || 5.3.0-3||
+|| php-dbg-snmp.i386 || 5.3.0-3||
+|| php-dbg-soap.i386 || 5.3.0-3||
+|| php-dbg-tidy.i386 || 5.3.0-3||
+|| php-dbg-wddx.i386 || 5.3.0-3||
+|| php-dbg-xmlrpc.i386 || 5.3.0-3||
+|| php-dbg-xsl.i386 || 5.3.0-3||
+|| php-dbg-zip.i386 || 5.3.0-3||
+|| php-devel.i386 || 5.3.0-3||
+|| php-enchant.i386 || 5.3.0-3||
+|| php-exif.i386 || 5.3.0-3||
+|| php-gd.i386 || 5.3.0-3||
+|| php-gettext.i386 || 5.3.0-3||
+|| php-gmp.i386 || 5.3.0-3||
+|| php-mbstring.i386 || 5.3.0-3||
+|| php-mssql.i386 || 5.3.0-3||
+|| php-mysql.i386 || 5.3.0-3||
+|| php-oci8.i386 || 5.3.0-3||
+|| php-odbc.i386 || 5.3.0-3||
+|| php-pcntl.i386 || 5.3.0-3||
+|| php-pecl-geoip.i386 || 1.0.7-1||
+|| php-pecl-markdown.i386 || 0.1.0-1||
+|| php-pecl-spidermonkey.i386 || 0.1.2-1||
+|| php-pecl-syck.i386 || 0.9.3-1||
+|| php-pecl-uploadprogress.i386 || 1.0.1-1||
+|| php-pgsql.i386 || 5.3.0-3||
+|| php-readline.i386 || 5.3.0-3||
+|| php-snmp.i386 || 5.3.0-3||
+|| php-soap.i386 || 5.3.0-3||
+|| php-tidy.i386 || 5.3.0-3||
+|| php-wddx.i386 || 5.3.0-3||
+|| php-xmlrpc.i386 || 5.3.0-3||
+|| php-xsl.i386 || 5.3.0-3||
+|| php-zip.i386 || 5.3.0-3||
+
+Interested in something you don't see here yet that would help PHP developers? Please make a request by opening a ticket.
