@@ -22,13 +22,12 @@ end
 
 Summary: PECL package to handle HTTP/HTTPS requests
 Name: %{peclname}
-Version: 1.6.3
-Release: 3
+Version: 1.6.4
+Release: 1
 License: PHP
 Group: Development/Languages
 URL: http://pecl.php.net/package/pecl_http
 Source: http://pecl.php.net/get/pecl_http-%{version}.tgz
-Patch0: pecl_http-1.6.3.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: php%{_dbg}, curl
 BuildRequires: php%{_dbg}, php%{_dbg}-devel, curl-devel, c-ares-devel, libidn-devel, openldap-devel
@@ -50,7 +49,6 @@ support. Parallel requests are available for PHP 5 and greater.
 
 %prep
 %setup -n pecl_http-%{version}
-%patch0 -p1
 
 %build
 # Workaround for broken old phpize on 64 bits
@@ -96,6 +94,9 @@ EOF
 %{_includedir}/php/ext/http/*
 
 %changelog
+* Tue Aug 11 2009 Clay Loveless <clay@killersoft.com>
+- Updated for release 1.6.4
+
 * Thu Jul  9 2009 Clay Loveless <clay@killersoft.com>
 - Rebuild for Killersoft repo, added additional cli and mod_php configs
 
