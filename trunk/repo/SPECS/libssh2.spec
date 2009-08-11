@@ -1,13 +1,13 @@
 # $Id: libssh2.spec 10547 2008-08-24 00:23:35Z clay $
 Summary: Library implementing the SSH2 protocol
 Name: libssh2
-Version: 1.1
+Version: 1.2
 Release: 1
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.libssh2.org/
 
-Source: http://dl.sf.net/sourceforge/libssh2/libssh2-%{version}.tar.gz
+Source: http://www.libssh2.org/download/libssh2-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires: pkgconfig, openssl-devel, zlib-devel
@@ -63,7 +63,10 @@ you will need to install %{name}-devel.
 %exclude %{_libdir}/libssh2.la
 
 %changelog
-* Sat Jun 27 2009 Clay Loveless <clay@killersoft.com>
+* Tue Aug 11 2009 Clay Loveless <clay@killersoft.com> - 1.2-1
+- Updated to 1.2
+
+* Sat Jun 27 2009 Clay Loveless <clay@killersoft.com> - 1.1-1
 - Upgraded to 1.1
 
 * Mon Apr 21 2008 Dag Rob Richards <rob@mashery.com> - 0.17-1
