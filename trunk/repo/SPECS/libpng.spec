@@ -2,7 +2,7 @@
 Summary: A library of functions for manipulating PNG image format files
 Name: libpng
 Epoch: 2
-Version: 1.2.37
+Version: 1.2.38
 Release: 1
 License: zlib
 Group: System Environment/Libraries
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT%{_libdir}/libpng12.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Aug 11 2009 Clay Loveless <clay@killersoft.com>
+- Update to 1.2.38
+
 * Sun Jun 28 2009 Clay Loveless <clay@killersoft.com>
 - Update to 1.2.37
 
