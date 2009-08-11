@@ -1,6 +1,6 @@
 # $Id$
 Name:           libevent
-Version:        1.4.11
+Version:        1.4.12
 Release:        1
 Summary:        Abstract asynchronous event notification library
 
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Tue Aug 11 2009 Clay Loveless <clay@killersoft.com>
+- Updated for version 1.4.12-stable
+
 * Sun Jun 28 2009 Clay Loveless <clay@killersoft.com>
 - Updated for version 1.4.11-stable
 
