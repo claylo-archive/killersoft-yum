@@ -2,7 +2,7 @@
 %define optflags -g -O2
 Name:           memcached
 Version:        1.4.0
-Release:        rc1.2
+Release:        1
 Summary:        High Performance, Distributed Memory Object Cache
 
 Group:          System Environment/Daemons
@@ -107,6 +107,9 @@ exit 0
 
 
 %changelog
+* Tue Aug 11 2009 Clay Loveless <clay@killersoft.com> 1.4.0-1
+- Updated to 1.4.0 release.
+
 * Wed Jul  8 2009 Clay Loveless <clay@killersoft.com> 1.4.0-rc1-2
 - Fixed file list between regular and devel packages
 
