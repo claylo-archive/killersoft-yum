@@ -16,7 +16,7 @@ http://memcached.googlecode.com/files/memcached-1.4.0-rc1.tar.gz
 http://www.kernel.org/pub/linux/utils/nfs/nfs-utils-1.0.9.tar.bz2
 http://download.tangent.org/libmemcached-0.31.tar.gz
 http://www.libssh2.org/download/libssh2-1.2.tar.gz
-http://pecl.php.net/get/pecl_http-1.6.3.tgz
+http://pecl.php.net/get/pecl_http-1.6.4.tgz
 http://pecl.php.net/get/spidermonkey-0.1.2.tgz
 http://pecl.php.net/get/memcached-1.0.0.tgz
 http://pecl.php.net/get/oauth-0.99.9.tgz
