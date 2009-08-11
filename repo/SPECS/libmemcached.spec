@@ -1,7 +1,7 @@
 # $Id$
 Name:      libmemcached
 Summary:   memcached C library and command line tools
-Version: 0.30
+Version: 0.31
 Release:   1
 License:   BSD
 Group:     System Environment/Libraries
@@ -99,6 +99,9 @@ you will need to install %{name}-devel.
 
 
 %changelog
+* Tue Aug 11 2009 Clay Loveless <clay@killersoft.com> - 0.31-1
+- Updated for 0.31
+
 * Sun Jun 28 2009 Clay Loveless <clay@killersoft.com> - 0.30-1
 - Updated for 0.30
 - relies on killersoft's memcached-devel package for completeness
