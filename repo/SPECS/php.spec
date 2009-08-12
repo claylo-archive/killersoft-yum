@@ -6,7 +6,7 @@
 #   libc-client-devel libtidy-devel cyrus-sasl-devel openldap-devel \
 #   postgresql-devel unixODBC-devel net-snmp-devel readline-devel \
 #   freetds-devel libXpm-devel freetype-devel gnutls-devel libicu-devel \
-#   libxslt-devel t1lib-devel libmcrypt-devel gettext-devel
+#   libxslt-devel t1lib-devel libmcrypt-devel gettext-devel oracle-instantclient11.1-devel oracle-instantclient11.1-basic
 # rpm -Uvh http://s3.killersoft.com/rpms/oracle-instantclient11.1-basic-11.1.0.7.0-1.i386.rpm
 # rpm -Uvh http://s3.killersoft.com/rpms/oracle-instantclient11.1-devel-11.1.0.7.0-1.i386.rpm
 
@@ -45,7 +45,7 @@ Group: Development/Languages
 Summary: CGI/FastCGI interface for PHP
 Requires: php-common = %{version}-%{release}
 Provides: php-cgi = %{version}-%{release}
-Conflicts: php-cgi-dbg
+Conflicts: php-dbg-cgi
 
 %description cgi
 The php-cgi package contains the CGI interface.
@@ -55,7 +55,7 @@ Group: Development/Languages
 Summary: Command-line interface for PHP
 Requires: php-common = %{version}-%{release}
 Provides: php-cli = %{version}-%{release}
-Conflicts: php-cli-dbg
+Conflicts: php-dbg-cli
 
 %description cli
 The php-cli package contains the command-line interface.
@@ -74,7 +74,7 @@ Provides: php-spl, php-sysvsem, php-sysvshm, php-sysvmsg, php-tokenizer
 Provides: php-zlib, php-json
 Obsoletes: php-openssl, php-curl, php-mhash
 Obsoletes: php-pecl-json, php-pecl-fileinfo
-Conflicts: php-common-dbg
+Conflicts: php-dbg-common
 
 %description common
 The php-common package contains files used by both the php
@@ -84,7 +84,7 @@ package and the php-cli package.
 Group: Development/Libraries
 Summary: Files needed for building PHP extensions
 Requires: php = %{version}-%{release}, autoconf213, automake
-Conflicts: devel-dbg
+Conflicts: php-dbg-devel
 
 %description devel
 The php-devel package contains the files needed for building PHP
@@ -96,7 +96,7 @@ Group: Development/Languages
 Summary: A module for uniformity and conformity of various spelling libraries.
 Requires: php-common = %{version}-%{release}, enchant
 BuildRequires: enchant-devel
-Conflicts: enchant-dbg
+Conflicts: php-dbg-enchant
 
 %description enchant
 php-enchant is the PHP binding for the Enchant library. Enchant steps in to 
@@ -113,7 +113,7 @@ Obsoletes: mod_php3-imap, stronghold-php-imap
 BuildRequires: krb5-devel
 BuildRequires: openssl-devel
 BuildRequires: libc-client-devel
-Conflicts: imap
+Conflicts: php-dbg-imap
 
 %description imap
 The php-imap package enables functions for the IMAP protocol, as well 
@@ -125,6 +125,7 @@ Group: Development/Languages
 Requires: php-common = %{version}-%{release}
 Provides: php_database, php-mysqli
 Obsoletes: mod_php3-mysql, stronghold-php-mysql
+Conflicts: php-dbg-mysql
 
 %description mysql
 The php-mysql package contains a dynamic shared object that will add
@@ -138,7 +139,7 @@ Group: Development/Languages
 Summary: A module for cleaning and repairing HTML documents.
 Requires: php-common = %{version}-%{release}, libtidy
 BuildRequires: libtidy-devel
-Conflicts: tidy-dbg
+Conflicts: php-dbg-tidy
 
 %description tidy
 php-tidy is a binding for the Tidy HTML clean and repair utility which 
@@ -151,7 +152,7 @@ Group: Development/Languages
 Requires: php-common = %{version}-%{release}, openldap
 Obsoletes: mod_php3-ldap, stronghold-php-ldap
 BuildRequires: cyrus-sasl-devel, openldap-devel, openssl-devel
-Conflicts: ldap-dbg
+Conflicts: php-dbg-ldap
 
 %description ldap
 The php-ldap package is a dynamic shared object (DSO) for the Apache
@@ -167,7 +168,7 @@ Group: Development/Languages
 Requires: php-common = %{version}-%{release}, php-pdo, oracle-instantclient11.1-basic
 Provides: php_database
 BuildRequires: krb5-devel, openssl-devel, oracle-instantclient11.1-devel
-Conflicts: oci8-dbg
+Conflicts: php-dbg-oci8
 
 %description oci8
 The php-oci8 package includes a dynamic shared object (DSO) that can
@@ -182,7 +183,7 @@ Requires: php-common = %{version}-%{release}, php-pdo, postgresql
 Provides: php_database
 Obsoletes: mod_php3-pgsql, stronghold-php-pgsql
 BuildRequires: krb5-devel, openssl-devel, postgresql-devel
-Conflicts: pgsql-dbg
+Conflicts: php-dbg-pgsql
 
 %description pgsql
 The php-pgsql package includes a dynamic shared object (DSO) that can
@@ -200,7 +201,7 @@ Summary: A module for PHP applications that use ODBC databases.
 Provides: php_database
 Obsoletes: stronghold-php-odbc
 BuildRequires: unixODBC-devel
-Conflicts: odbc-dbg
+Conflicts: php-dbg-odbc
 
 %description odbc
 The php-odbc package contains a dynamic shared object that will add
@@ -217,7 +218,7 @@ Requires: php-common = %{version}-%{release}, php-pdo, freetds
 Summary: A module for PHP applications that use MS SQL databases.
 Provides: php_database
 BuildRequires: freetds-devel
-Conflicts: mssql-dbg
+Conflicts: php-dbg-mssql
 
 %description mssql
 The php-mssql package contains a dynamic shared object that will add
@@ -228,7 +229,7 @@ Summary: A module for PHP applications that query SNMP-managed devices.
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, net-snmp
 BuildRequires: net-snmp-devel
-Conflicts: snmp-dbg
+Conflicts: php-snmp
 
 %description snmp
 The php-snmp package contains a dynamic shared object that will add
@@ -240,7 +241,7 @@ will need to install this package and the php package.
 Summary: A database abstraction layer module for PHP applications
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
-Conflicts: dba-dbg
+Conflicts: php-dbg-dba
 
 %description dba
 The php-dba package contains a dynamic shared object that will add
@@ -251,7 +252,7 @@ Summary: A module for PHP applications for using the GNU Readline library
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, readline
 BuildRequires: readline-devel
-Conflicts: readline-dbg
+Conflicts: php-dbg-readline
 
 %description readline
 The php-readline package contains functions that provide editable command 
@@ -263,6 +264,7 @@ Group: Development/Languages
 Requires: php-common = %{version}-%{release}
 Summary: A module for PHP applications that use the SOAP protocol
 BuildRequires: libxml2-devel
+Conflicts: php-dbg-soap
 
 %description soap
 The php-soap package contains a dynamic shared object that will add
@@ -273,6 +275,7 @@ Summary: A module for PHP applications which use the XML-RPC protocol
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
 BuildRequires: expat-devel
+Conflicts: php-dbg-xmlrpc
 
 %description xmlrpc
 The php-xmlrpc package contains a dynamic shared object that will add
@@ -282,6 +285,7 @@ support for the XML-RPC protocol to PHP.
 Summary: A module for PHP applications which need multi-byte string handling
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
+Conflicts: php-dbg-mbstring
 
 %description mbstring
 The php-mbstring package contains a dynamic shared object that will add
@@ -292,6 +296,7 @@ Summary: A module for PHP applications for using the gd graphics library
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
 BuildRequires: freetype-devel, t1lib-devel, libjpeg-devel, libpng-devel, libXpm-devel
+Conflicts: php-dbg-gd
 
 %description gd
 The php-gd package contains a dynamic shared object that will add
@@ -301,6 +306,7 @@ support for using the gd graphics library to PHP.
 Summary: A module for PHP applications for using the bcmath library
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
+Conflicts: php-dbg-bcmath
 
 %description bcmath
 The php-bcmath package contains a dynamic shared object that will add
@@ -311,6 +317,7 @@ Summary: A module for PHP applications for using the mcrypt library
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, libmcrypt
 BuildRequires: libmcrypt-devel
+Conflicts: php-dbg-mcrypt
 
 %description mcrypt
 The php-mcrypt package contains a dynamic shared object that will add
@@ -320,6 +327,7 @@ support for using the mcrypt library to PHP.
 Summary: A module for PHP applications for using the EXIF functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
+Conflicts: php-dbg-exif
 
 %description exif
 The php-exif package contains a dynamic shared object that will add
@@ -330,6 +338,7 @@ Summary: A module for PHP applications for using the bzip2 functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, bzip2
 BuildRequires: bzip2-devel
+Conflicts: php-dbg-bz2
 
 %description bz2
 The php-bz2 package contains a dynamic shared object that will add
@@ -340,6 +349,7 @@ Summary: A module for PHP applications for using the gmp functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, gmp
 BuildRequires: gmp-devel
+Conflicts: php-dbg-gmp
 
 %description gmp
 The php-gmp package contains a dynamic shared object that will add
@@ -350,6 +360,7 @@ Summary: A module for PHP applications for using the WDDX functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
 BuildRequires: expat-devel
+Conflicts: php-dbg-wddx
 
 %description wddx
 The php-wddx package contains a dynamic shared object that will add
@@ -359,6 +370,7 @@ support for using the WDDX functions to PHP.
 Summary: A module for PHP applications for using the calendar functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
+Conflicts: php-dbg-calendar
 
 %description calendar
 The php-calendar package contains a dynamic shared object that will add
@@ -369,6 +381,7 @@ Summary: A module for PHP applications for using the gettext functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, gettext
 BuildRequires: gettext-devel
+Conflicts: php-dbg-gettext
 
 %description gettext
 The php-gettext package contains a dynamic shared object that will add
@@ -379,6 +392,7 @@ Summary: A module for PHP applications for using the xsl functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, libxslt, libxml2
 BuildRequires: libxslt-devel libxml2-devel
+Conflicts: php-dbg-xsl
 
 %description xsl
 The php-xsl package contains a dynamic shared object that will add
@@ -389,6 +403,7 @@ Summary: A module for PHP applications for using the Zip functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, zlib
 BuildRequires: zlib-devel
+Conflicts: php-dbg-zip
 
 %description zip
 The php-zip package contains a dynamic shared object that will add
@@ -399,6 +414,7 @@ Summary: A module for PHP applications for using the intl functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}, libicu
 BuildRequires: libicu-devel
+Conflicts: php-dbg-intl
 
 %description intl
 The php-intl package contains a dynamic shared object that will add
@@ -408,13 +424,14 @@ support for using the intl functions to PHP.
 Summary: A module for PHP applications for using the proccess control functions
 Group: Development/Languages
 Requires: php-common = %{version}-%{release}
+Conflicts: php-dbg-pcntl
 
 %description pcntl
 The php-pcntl package contains a dynamic shared object that will add
 support for using the process control functions to PHP.
 
 %prep
-%setup -q
+%setup -q php-%{version}
 
 
 %{__cat} <<'EOF' >logrotate.d.php
@@ -435,6 +452,15 @@ EOF
 cp Zend/LICENSE Zend/ZEND_LICENSE
 cp TSRM/LICENSE TSRM_LICENSE
 cp ext/gd/libgd/README gd_README
+
+# fix busted pdo_oci config.m4 for x86_64
+%ifarch x86_64
+sed -i -e 's|/client|/client64|' ext/pdo_oci/config.m4
+PHP_AUTOCONF=/usr/bin/autoconf-2.13
+PHP_AUTOHEADER=/usr/bin/autoheader-2.13
+export PHP_AUTOCONF PHP_AUTOHEADER
+./buildconf --force
+%endif
 
 # Sources are built a couple times
 mkdir build-cli build-cgi build-apache
@@ -1034,7 +1060,6 @@ popd
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/pcntl.ini
 
 %changelog
-
 * Tue Jul  7 2009 Clay Loveless <clay@killersoft.com> 5.3.0-2, 5.3.0-3
 - Fixed paths for extension inclusion
 - Fixed builds for cli, cgi, mod_php so that mysqlnd is enabled inside each.

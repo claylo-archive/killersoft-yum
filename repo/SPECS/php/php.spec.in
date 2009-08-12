@@ -453,6 +453,15 @@ cp Zend/LICENSE Zend/ZEND_LICENSE
 cp TSRM/LICENSE TSRM_LICENSE
 cp ext/gd/libgd/README gd_README
 
+# fix busted pdo_oci config.m4 for x86_64
+%ifarch x86_64
+sed -i -e 's|/client|/client64|' ext/pdo_oci/config.m4
+PHP_AUTOCONF=/usr/bin/autoconf-2.13
+PHP_AUTOHEADER=/usr/bin/autoheader-2.13
+export PHP_AUTOCONF PHP_AUTOHEADER
+./buildconf --force
+%endif
+
 # Sources are built a couple times
 mkdir build-cli{:dbg} build-cgi{:dbg} build-apache{:dbg}
 
