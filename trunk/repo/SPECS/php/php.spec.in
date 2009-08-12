@@ -19,7 +19,7 @@
 Summary: PHP: Hypertext Preprocessor
 Name: php{:dbg}
 Version: 5.3.0
-Release: 3
+Release: 4
 Group: Development/Languages
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Obsoletes: php-dbg, php3, phpfi, stronghold-php
@@ -433,7 +433,6 @@ support for using the process control functions to PHP.
 %prep
 %setup -q php-%{version}
 
-
 %{__cat} <<'EOF' >logrotate.d.php
 /var/log/php/*.log {
   daily
@@ -461,6 +460,11 @@ PHP_AUTOHEADER=/usr/bin/autoheader-2.13
 export PHP_AUTOCONF PHP_AUTOHEADER
 ./buildconf --force
 %endif
+
+# fix libdir path issues. Thanks, Rob Richards.
+sed -i -e 's|(libdir)/build|(libdir)/php/build|' scripts/Makefile.frag
+sed -i -e 's|`eval echo @libdir@`/build|`eval echo @libdir@`/php/build|' scripts/phpize.in
+sed -i -e 's|EXTENSION_DIR=$libdir/extensions/$extbasedir|EXTENSION_DIR=$libdir/php/extensions/$extbasedir|' configure
 
 # Sources are built a couple times
 mkdir build-cli{:dbg} build-cgi{:dbg} build-apache{:dbg}
@@ -490,6 +494,7 @@ ln -sf ../configure
 sh ./configure \
   --prefix=%{_prefix} \
   --sysconfdir=%{_sysconfdir} \
+  --libdir=%{_libdir} \
   --with-libdir=%{_lib} \
   --mandir=%{_prefix}/share/man \
   --with-pic \
@@ -674,8 +679,8 @@ install -m 755 -d $RPM_BUILD_ROOT%{_sysconfdir}/php.cgi.d/extensions
 install -m 755 -d $RPM_BUILD_ROOT%{_sysconfdir}/php.cli.d/extensions
 install -m 755 -d $RPM_BUILD_ROOT%{_sysconfdir}/php.mod.d/extensions
 
-install -m 755 -d $RPM_BUILD_ROOT%{_localstatedir}/lib/php
-install -m 700 -d $RPM_BUILD_ROOT%{_localstatedir}/lib/php/session
+install -m 755 -d $RPM_BUILD_ROOT%{_localstatedir}/%{_lib}/php
+install -m 700 -d $RPM_BUILD_ROOT%{_localstatedir}/%{_lib}/php/session
 
 
 
@@ -823,7 +828,7 @@ popd
 %files
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/libphp5.so
-%attr(0770,root,apache) %dir %{_localstatedir}/lib/php/session
+%attr(0770,root,apache) %dir %{_localstatedir}/%{_lib}/php/session
 %config %{_sysconfdir}/httpd/conf.d/php.conf
 %{contentdir}/icons/php.gif
 
@@ -831,17 +836,17 @@ popd
 %defattr(-,root,root)
 %doc CODING_STANDARDS CREDITS EXTENSIONS INSTALL LICENSE NEWS README*
 %doc Zend/ZEND_* gd_README TSRM_LICENSE
-%config %{_sysconfdir}/php.mod.d/php.ini
-%config %{_sysconfdir}/php.mod.d/php-dev.ini
+%config(noreplace) %{_sysconfdir}/php.mod.d/php.ini
+%config(noreplace) %{_sysconfdir}/php.mod.d/php-dev.ini
 %dir %{_sysconfdir}/php.mod.d
-%dir %{_localstatedir}/lib/php
-%dir %{_libdir}/php
+%dir %{_localstatedir}/%{_lib}/php
+#%dir %{_libdir}/php
 
 %files cli
 %defattr(-,root,root)
-%config %{_sysconfdir}/pear.conf
-%config %{_sysconfdir}/php.cli.d/php.ini
-%config %{_sysconfdir}/php.cli.d/php-dev.ini
+%config(noreplace) %{_sysconfdir}/pear.conf
+%config(noreplace) %{_sysconfdir}/php.cli.d/php.ini
+%config(noreplace) %{_sysconfdir}/php.cli.d/php-dev.ini
 %dir %{_sysconfdir}/php.cli.d
 %{_bindir}/php
 %{_bindir}/pear
@@ -871,8 +876,8 @@ popd
 %files cgi
 %defattr(-,root,root)
 %{_bindir}/php-cgi
-%config %{_sysconfdir}/php.cgi.d/php.ini
-%config %{_sysconfdir}/php.cgi.d/php-dev.ini
+%config(noreplace) %{_sysconfdir}/php.cgi.d/php.ini
+%config(noreplace) %{_sysconfdir}/php.cgi.d/php-dev.ini
 %dir %{_sysconfdir}/php.cgi.d
 
 %files devel
@@ -1060,6 +1065,11 @@ popd
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.mod.d/extensions/pcntl.ini
 
 %changelog
+* Wed Aug 12 2009 Clay Loveless <clay@killersoft.com> 5.3.0-4
+- Fixed paths for libs in x86_64 build
+- Fixed pdo_oci config for x86_64
+- Made sure php.ini files don't get overwritten.
+
 * Tue Jul  7 2009 Clay Loveless <clay@killersoft.com> 5.3.0-2, 5.3.0-3
 - Fixed paths for extension inclusion
 - Fixed builds for cli, cgi, mod_php so that mysqlnd is enabled inside each.
