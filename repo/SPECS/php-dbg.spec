@@ -21,7 +21,7 @@ Name: php-dbg
 Version: 5.3.0
 Release: 4
 Group: Development/Languages
-BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
+BuildRoot: %{_tmppath}/php-%{version}-buildroot
 Obsoletes: php-dbg, php3, phpfi, stronghold-php
 URL: http://www.php.net/
 License: PHP License
@@ -431,7 +431,7 @@ The php-dbg-pcntl package contains a dynamic shared object that will add
 support for using the process control functions to PHP.
 
 %prep
-%setup -q php-%{version}
+%setup -q -n php-%{version}
 
 %{__cat} <<'EOF' >logrotate.d.php
 /var/log/php/*.log {
